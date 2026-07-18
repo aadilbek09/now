@@ -776,6 +776,12 @@
       var list = document.getElementById('messagesList');
       var unread = 0;
       var colors = ['blue','green','yellow','red','blue','green'];
+      if (!messages.length) {
+        list.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#128172;</div><p class="empty-state__text">Hozircha xabarlar yo\'q</p></div>';
+        document.getElementById('msgCount').textContent = '0 ta';
+        document.getElementById('msgBadge').style.display = 'none';
+        return;
+      }
       list.innerHTML = messages.map(function(m, i) {
         if (!m.is_read) unread++;
         var initials = (m.name || '??').split(' ').map(function(w) { return w.charAt(0); }).join('').toUpperCase().slice(0, 2);
