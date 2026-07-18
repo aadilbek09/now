@@ -57,7 +57,7 @@
     (function () {
       var currentUser = getUser();
       if (!currentUser || !getToken()) {
-        window.location.href = 'login.html';
+        window.location.href = '/login/';
         return;
       }
       loadProfile();
@@ -80,7 +80,7 @@
 
     document.getElementById('logoutBtn').addEventListener('click', function () {
       clearTokens();
-      window.location.href = 'login.html';
+      window.location.href = '/login/';
     });
   </script>
 </body>

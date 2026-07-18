@@ -409,7 +409,7 @@
     (function authCheck() {
       var user = getUser();
       if (!user || user.role !== 'admin') {
-        window.location.href = 'login.html';
+        window.location.href = '/login/';
         return;
       }
       currentUserData = user;
@@ -422,7 +422,7 @@
     function doLogout() {
       if (!confirm('Tizimdan chiqishni xohlaysizmi?')) return;
       clearTokens();
-      window.location.href = 'login.html';
+      window.location.href = '/login/';
     }
 
     // ===== FORMAT HELPERS =====
