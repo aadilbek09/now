@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mahsulot — Restaran</title>
+  <link rel="stylesheet" href="/static/frontend/globals.css" />
+  <link rel="stylesheet" href="/static/frontend/menu.css" />
+  <style>
+    .pd-wrap { max-width: 720px; margin: 0 auto; padding: 90px 16px 40px; }
+    .pd-back { display: inline-flex; align-items: center; gap: 6px; color: var(--color-primary); text-decoration: none; font-weight: 600; margin-bottom: 18px; }
+    .pd-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 16px; overflow: hidden; box-shadow: 0 6px 24px rgba(0,0,0,.06); }
+    .pd-img { width: 100%; height: 300px; object-fit: cover; }
+    .pd-body { padding: 22px; }
+    .pd-cat { font-size: 12px; color: var(--color-primary); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+    .pd-name { font-size: 26px; font-weight: 700; margin: 6px 0 4px; }
+    .pd-price { font-size: 22px; font-weight: 700; color: var(--color-primary); margin-bottom: 14px; }
+    .pd-desc { font-size: 15px; line-height: 1.6; color: #555; }
+    .pd-order { display: inline-block; margin-top: 18px; background: #25D366; color: #fff; padding: 12px 22px; border-radius: 10px; font-weight: 600; text-decoration: none; }
+    .pd-section { margin-top: 28px; }
+    .pd-section h3 { font-size: 18px; margin-bottom: 12px; }
+    .pd-stars { display: flex; gap: 6px; font-size: 28px; cursor: pointer; }
+    .pd-stars .star { color: #ddd; transition: color .15s; }
+    .pd-stars .star.active, .pd-stars .star.hovered { color: #FFB400; }
+    .pd-actions { display: flex; gap: 12px; margin-top: 14px; }
+    .pd-like, .pd-dislike { flex: 1; padding: 10px; border: 1px solid var(--color-border); border-radius: 10px; background: var(--color-surface); cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .pd-like.active { color: #2ecc71; border-color: #2ecc71; }
+    .pd-dislike.active { color: #e74c3c; border-color: #e74c3c; }
+    .pd-comments { margin-top: 26px; }
+    .pd-comment-item { padding: 12px 0; border-bottom: 1px solid var(--color-border); }
+    .pd-comment-item p { margin: 2px 0; }
+    .pd-input { width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: 10px; font-size: 14px; font-family: inherit; resize: vertical; }
+    .pd-submit { margin-top: 10px; background: var(--color-primary); color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+    .pd-loading { text-align: center; padding: 60px 20px; color: #999; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header__inner">
+      <a href="/" class="header__logo">Restaran</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="header__nav" id="headerNav">
+        <a href="/">Bosh sahifa</a>
+        <a href="/menu/">Menu</a>
+        <a href="/news/">Yangiliklar</a>
+        <a href="/about/">Biz haqimizda</a>
+        <a href="/contact/">Aloqa</a>
+        <a href="/profile/" id="profileLink">Kabinet</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="pd-wrap">
+    <a href="/menu/" class="pd-back">&larr; Menu ga qaytish</a>
+    <div id="pdContent">
+      <p class="pd-loading">Yuklanmoqda...</p>
+    </div>
+  </main>
+
+  <script src="/static/frontend/api.js"></script>
+  <script>
+    var productId = null;
+
+    function getQueryParam(name) {
+      var match = new RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+      return match ? decodeURIComponent(match[1]) : null;
+    }
+
+    function getProductIdFromUrl() {
+      var id = getQueryParam('id') || getQueryParam('pk');
+      if (id) return id;
+      var m = window.location.pathname.match(/\/product\/(\d+)\/?/);
+      return m ? m[1] : null;
+    }
+
+    function initNav() {
+      var ham = document.getElementById('hamburger');
+      var nav = document.getElementById('headerNav');
+      if (!ham || !nav) return;
+      ham.addEventListener('click', function() {
+        nav.classList.toggle('open');
+        ham.classList.toggle('open');
+      });
+    }
+
+    function renderProduct(p) {
+      var img = p.image_big || p.image || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80';
+      var html =
+        '<div class="pd-card">' +
+          '<img class="pd-img" src="' + img + '" alt="' + (p.name || '') + '" />' +
+          '<div class="pd-body">' +
+            '<div class="pd-cat">' + (p.category_name || 'Mahsulot') + '</div>' +
+            '<div class="pd-name">' + (p.name || '') + '</div>' +
+            '<div class="pd-price">' + (p.price || 0) + ' so\'m</div>' +
+            '<div class="pd-desc">' + (p.description || 'Ta\'rif mavjud emas.') + '</div>' +
+            '<a class="pd-order" href="https://wa.me/998912555309?text=' +
+              encodeURIComponent('Salem! Men buyurtpa berejaqpan:\n\n' + (p.name || '') + ' - ' + (p.price || 0) + ' so\'m\n\nTelefon: +998912555309 yoki +998933350805') +
+              '" target="_blank">WhatsApp orqali buyurtma</a>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="pd-section">' +
+          '<h3>Baholash</h3>' +
+          '<div class="pd-stars" id="pdStars">' +
+            '<span class="star" data-value="1">★</span>' +
+            '<span class="star" data-value="2">★</span>' +
+            '<span class="star" data-value="3">★</span>' +
+            '<span class="star" data-value="4">★</span>' +
+            '<span class="star" data-value="5">★</span>' +
+          '</div>' +
+          '<div class="pd-actions">' +
+            '<button class="pd-like" id="pdLikeBtn"><span>&#128077;</span> <span id="pdLikeCount">0</span></button>' +
+            '<button class="pd-dislike" id="pdDislikeBtn"><span>&#128078;</span> <span id="pdDislikeCount">0</span></button>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="pd-comments">' +
+          '<h3>Izohlar</h3>' +
+          '<textarea class="pd-input" id="pdCommentInput" rows="3" placeholder="Izoh qoldiring..."></textarea>' +
+          '<button class="pd-submit" id="pdCommentBtn">Yuborish</button>' +
+          '<div id="pdComments" style="margin-top:16px;"></div>' +
+        '</div>';
+
+      document.getElementById('pdContent').innerHTML = html;
+      initProductInteractions();
+      loadComments();
+      loadRating();
+      loadLikes();
+    }
+
+    function initProductInteractions() {
+      var stars = document.querySelectorAll('#pdStars .star');
+      stars.forEach(function(star) {
+        star.addEventListener('click', function() {
+          var val = parseInt(star.getAttribute('data-value'));
+          stars.forEach(function(s) { s.className = 'star' + (parseInt(s.getAttribute('data-value')) <= val ? ' active' : ''); });
+          apiPost('/menu/products/' + productId + '/rate', { score: val }).then(function() {
+            loadRating();
+          }).catch(function() { console.error('rate failed'); });
+        });
+        star.addEventListener('mouseenter', function() {
+          var val = parseInt(star.getAttribute('data-value'));
+          stars.forEach(function(s) { if (parseInt(s.getAttribute('data-value')) <= val) s.classList.add('hovered'); });
+        });
+        star.addEventListener('mouseleave', function() {
+          stars.forEach(function(s) { s.classList.remove('hovered'); });
+        });
+      });
+
+      var likeBtn = document.getElementById('pdLikeBtn');
+      var dislikeBtn = document.getElementById('pdDislikeBtn');
+      if (likeBtn) likeBtn.addEventListener('click', function() { toggleLike(true); });
+      if (dislikeBtn) dislikeBtn.addEventListener('click', function() { toggleLike(false); });
+
+      var commentBtn = document.getElementById('pdCommentBtn');
+      var commentInput = document.getElementById('pdCommentInput');
+      if (commentBtn) commentBtn.addEventListener('click', postComment);
+      if (commentInput) commentInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); postComment(); }
+      });
+    }
+
+    function loadComments() {
+      var el = document.getElementById('pdComments');
+      if (!el) return;
+      el.innerHTML = '<p style="color:#999;font-size:13px;">Izohlar yuklanmoqda...</p>';
+      apiGet('/menu/products/' + productId + '/comments').then(function(comments) {
+        var arr = Array.isArray(comments) ? comments : [];
+        if (!arr.length) { el.innerHTML = '<p style="color:#999;font-size:13px;">Hali izohlar yo\'q.</p>'; return; }
+        el.innerHTML = arr.map(function(c) {
+          return '<div class="pd-comment-item">' +
+            '<p style="font-size:12px;color:#999;">' + (c.created_at ? new Date(c.created_at).toLocaleDateString() : '') + '</p>' +
+            '<p>' + (c.text || '') + '</p>' +
+          '</div>';
+        }).join('');
+      }).catch(function() {
+        el.innerHTML = '<p style="color:#999;font-size:13px;">Izohlarni yuklashda xatolik.</p>';
+      });
+    }
+
+    function postComment() {
+      var input = document.getElementById('pdCommentInput');
+      var text = input.value.trim();
+      if (!text || !productId) return;
+      apiPost('/menu/products/' + productId + '/comments', { text: text }).then(function(newComment) {
+        var el = document.getElementById('pdComments');
+        var noMsg = el.querySelector('p');
+        if (noMsg && noMsg.textContent.indexOf('Hali izohlar') !== -1) el.innerHTML = '';
+        var div = document.createElement('div');
+        div.className = 'pd-comment-item';
+        div.innerHTML = '<p style="font-size:12px;color:#999;">Hozirgina</p><p>' + (newComment.text || text) + '</p>';
+        el.appendChild(div);
+        input.value = '';
+      }).catch(function() {
+        alert('Izoh yuborishda xatolik.');
+      });
+    }
+
+    function loadRating() {
+      apiGet('/menu/products/' + productId + '/rating').then(function(data) {
+        var avg = data.average_score || 0;
+        var stars = document.querySelectorAll('#pdStars .star');
+        stars.forEach(function(s) {
+          s.className = 'star' + (parseInt(s.getAttribute('data-value')) <= Math.round(avg) ? ' active' : '');
+        });
+      }).catch(function() {});
+    }
+
+    function loadLikes() {
+      apiGet('/menu/products/' + productId + '/rating').then(function(data) {
+        var like = document.getElementById('pdLikeCount');
+        var dislike = document.getElementById('pdDislikeCount');
+        if (like) like.textContent = data.likes_count || 0;
+        if (dislike) dislike.textContent = data.dislikes_count || 0;
+      }).catch(function() {});
+    }
+
+    function toggleLike(isLike) {
+      if (!productId) return;
+      apiPost('/menu/products/' + productId + '/like', { is_like: isLike }).then(function(res) {
+        var likeBtn = document.getElementById('pdLikeBtn');
+        var dislikeBtn = document.getElementById('pdDislikeBtn');
+        if (likeBtn) likeBtn.className = 'pd-like' + (isLike ? ' active' : '');
+        if (dislikeBtn) dislikeBtn.className = 'pd-dislike' + (!isLike ? ' active' : '');
+        if (res.likes_count != null && document.getElementById('pdLikeCount'))
+          document.getElementById('pdLikeCount').textContent = res.likes_count;
+        if (res.dislikes_count != null && document.getElementById('pdDislikeCount'))
+          document.getElementById('pdDislikeCount').textContent = res.dislikes_count;
+      }).catch(function() { console.error('like failed'); });
+    }
+
+    function init() {
+      initNav();
+      productId = getProductIdFromUrl();
+      if (!productId) {
+        document.getElementById('pdContent').innerHTML = '<p class="pd-loading">Mahsulot topilmadi.</p>';
+        return;
+      }
+      apiGet('/menu/products/' + productId).then(function(p) {
+        renderProduct(p);
+      }).catch(function() {
+        document.getElementById('pdContent').innerHTML = '<p class="pd-loading">Mahsulotni yuklashda xatolik.</p>';
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>

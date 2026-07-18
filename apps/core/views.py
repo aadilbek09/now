@@ -97,11 +97,12 @@ class AdminRestaurantInfoUpdateView(generics.UpdateAPIView):
 FRONTEND_DIR = os.path.join(settings.BASE_DIR, 'static', 'frontend')
 
 
-def serve_frontend(request, page='index.html'):
+def serve_frontend(request, page='index.html', pk=None):
     """
     Frontend HTML fayllarini xizmat qilish (Django orqali).
     / -> static/frontend/index.html
     /menu/ -> static/frontend/menu.html
+    /product/<pk>/ -> static/frontend/product-detail.html
     """
     if not page.endswith('.html'):
         page += '.html'

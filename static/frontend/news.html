@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <base href="/static/frontend/">
+  <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Janaliqlar — Restaran</title>
-  <link rel="stylesheet" href="globals.css" />
-  <link rel="stylesheet" href="news.css" />
-  <link rel="stylesheet" href="menu.css" />
+  <link rel="stylesheet" href="/static/frontend/globals.css />
+  <link rel="stylesheet" href="/static/frontend/news.css />
+  <link rel="stylesheet" href="/static/frontend/menu.css />
 </head>
 <body>
 
@@ -59,22 +59,24 @@
           <button class="product-modal-order" id="productModalOrder">Buyurtpa beriw</button>
           <p style="font-size:12px;color:var(--color-text-gray);margin-top:8px;text-align:center;">&#128222; +998912555309 / +998933350805</p>
 
-          <div class="product-modal-divider"></div>
-          <div class="product-actions">
-            <button class="product-like" id="productLikeBtn">&#128077; <span id="productLikeCount">0</span></button>
-            <button class="product-dislike" id="productDislikeBtn">&#128078; <span id="productDislikeCount">0</span></button>
+          <div id="productModalExtra">
+            <div class="product-modal-divider"></div>
+            <div class="product-actions">
+              <button class="product-like" id="productLikeBtn">&#128077; <span id="productLikeCount">0</span></button>
+              <button class="product-dislike" id="productDislikeBtn">&#128078; <span id="productDislikeCount">0</span></button>
+            </div>
+            <div class="product-stars" id="productStars">
+              <span class="star" data-value="1">&#9734;</span>
+              <span class="star" data-value="2">&#9734;</span>
+              <span class="star" data-value="3">&#9734;</span>
+              <span class="star" data-value="4">&#9734;</span>
+              <span class="star" data-value="5">&#9734;</span>
+            </div>
+            <p class="product-stars-label" id="productStarsLabel">Baha beriw</p>
+            <textarea class="product-comment-input" id="productCommentInput" placeholder="Izoh qoldirish..." rows="3"></textarea>
+            <button class="product-comment-btn" id="productCommentBtn">Pikir qaldiriw</button>
+            <div class="product-comments" id="productComments"></div>
           </div>
-          <div class="product-stars" id="productStars">
-            <span class="star" data-value="1">&#9734;</span>
-            <span class="star" data-value="2">&#9734;</span>
-            <span class="star" data-value="3">&#9734;</span>
-            <span class="star" data-value="4">&#9734;</span>
-            <span class="star" data-value="5">&#9734;</span>
-          </div>
-          <p class="product-stars-label" id="productStarsLabel">Baha beriw</p>
-          <textarea class="product-comment-input" id="productCommentInput" placeholder="Izoh qoldirish..." rows="3"></textarea>
-          <button class="product-comment-btn" id="productCommentBtn">Pikir qaldiriw</button>
-          <div class="product-comments" id="productComments"></div>
         </div>
       </div>
     </div>
@@ -135,7 +137,7 @@
     </div>
   </div>
 
-  <script src="api.js"></script>
+  <script src="/static/frontend/api.js"></script>
   <script>
     (function() {
       var ham = document.getElementById('hamburger');
@@ -188,7 +190,7 @@
             '<p class="news-card__title">' + (post.title || '') + '</p>' +
             '<p class="news-card__desc">' + (post.desc || '') + '</p>' +
             '<div class="news-card__footer">' +
-              '<a href="#" class="news-card__link" data-id="' + post.id + '">Batafsil</a>' +
+              '<a href="javascript:void(0)" class="news-card__link" data-id="' + post.id + '" onclick="openNewsModal(' + post.id + ')">Batafsil</a>' +
               '<span class="news-card__date">' + formatDate(post.created_at) + '</span>' +
             '</div>' +
           '</div>';
@@ -268,7 +270,7 @@
     var currentProductId = null;
     var productData = {};
 
-    function openProduct(item) {
+    function openNewsModal(id) {
       var modal = document.getElementById('productModal');
       if (!modal) return;
 
@@ -279,50 +281,25 @@
       var priceEl = document.getElementById('productModalPrice');
       var orderBtn = document.getElementById('productModalOrder');
 
-      var name = item.getAttribute('data-name') || item.querySelector('.news-card__title, .menu-item__name, .mp-card__name').textContent;
-      var price = item.getAttribute('data-price') || '';
-      var category = item.getAttribute('data-category') || '';
-      var desc = item.getAttribute('data-description') || 'Ta\'rif mavjud emas.';
-      var img = item.getAttribute('data-img') || item.querySelector('img').src;
+      apiGet('/news/posts/' + id).then(function(post) {
+        var extra = document.getElementById('productModalExtra');
+        if (extra) extra.style.display = 'none';
+        imgEl.src = post.image || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80';
+        imgEl.alt = post.title || '';
+        catEl.textContent = post.category || 'Yangilik';
+        nameEl.textContent = post.title || '';
+        descEl.textContent = post.content || post.desc || 'Ta\'rif mavjud emas.';
+        priceEl.textContent = '';
 
-      currentProductId = name;
-      if (!productData[currentProductId]) {
-        productData[currentProductId] = { liked: false, disliked: false, likeCount: 0, dislikeCount: 0, rating: 0, comments: [] };
-      }
+        orderBtn.onclick = function() {
+          var msg = 'Salem! Men ushbu yangilik/comment haqida ko\'proq bilmoqchiman:\n\n' + (post.title || '') + '\n\nTelefon: +998912555309 yoki +998933350805';
+          window.open('https://wa.me/998912555309?text=' + encodeURIComponent(msg), '_blank');
+        };
 
-      imgEl.src = img;
-      imgEl.alt = name;
-      catEl.textContent = category;
-      nameEl.textContent = name;
-      descEl.textContent = desc;
-      priceEl.textContent = price;
-
-      orderBtn.onclick = function() {
-        var msg = 'Salem! Men buyurtpa berjaqpan:\n\n' + name + ' - ' + price + '\n\nKategoriya: ' + category + '\n\nTelefon: +998912555309 yoki +998933350805';
-        window.open('https://wa.me/998912555309?text=' + encodeURIComponent(msg), '_blank');
-      };
-
-      var data = productData[currentProductId];
-      document.getElementById('productLikeBtn').className = 'product-like' + (data.liked ? ' active' : '');
-      document.getElementById('productDislikeBtn').className = 'product-dislike' + (data.disliked ? ' active' : '');
-      document.getElementById('productLikeCount').textContent = data.likeCount || 0;
-      document.getElementById('productDislikeCount').textContent = data.dislikeCount || 0;
-
-      var stars = document.querySelectorAll('.star');
-      stars.forEach(function(s) { s.className = 'star' + (parseInt(s.getAttribute('data-value')) <= data.rating ? ' active' : ''); });
-      document.getElementById('productStarsLabel').textContent = data.rating > 0 ? 'Siz ' + data.rating + ' juldiz berdiniz' : 'Baho berish';
-
-      document.getElementById('productCommentInput').value = '';
-      var commentsEl = document.getElementById('productComments');
-      commentsEl.innerHTML = '';
-      data.comments.forEach(function(c) {
-        var div = document.createElement('div');
-        div.className = 'product-comment-item';
-        div.textContent = c;
-        commentsEl.appendChild(div);
+        modal.classList.add('open');
+      }).catch(function() {
+        alert('Yangilikni yuklashda xatolik.');
       });
-
-      modal.classList.add('open');
     }
 
     (function() {
