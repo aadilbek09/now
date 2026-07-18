@@ -180,7 +180,14 @@
           msg += '\n\nUsername: ' + (result ? result.username : username);
         }
         alert(msg);
-        window.location.href = 'login.html';
+        try {
+          var loginData = await apiPost('/accounts/auth/login', { username: username, password: password });
+          setTokens(loginData.access, loginData.refresh);
+          setUser(loginData.user);
+          window.location.href = 'profile.html';
+        } catch (e) {
+          window.location.href = 'login.html';
+        }
       } catch (err) {
         if (err && err.json) {
           err.json().then(function (data) {

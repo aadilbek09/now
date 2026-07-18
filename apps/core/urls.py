@@ -26,5 +26,6 @@ urlpatterns = [
     path('contact/', serve_frontend, {'page': 'contact.html'}, name='contact'),
     path('login/', serve_frontend, {'page': 'login.html'}, name='login'),
     path('register/', serve_frontend, {'page': 'register.html'}, name='register'),
+    path('profile/', serve_frontend, {'page': 'profile.html'}, name='profile'),
     path('admin-panel/', serve_frontend, {'page': 'admin-panel.html'}, name='admin-panel'),
 ]

@@ -21,9 +21,10 @@
       <a href="menu.html">Menyu</a>
       <a href="news.html">Janaliqlar</a>
       <a href="about.html">Biz haqimizda</a>
-      <a href="contact.html">Biz benen bag'laniw</a>
-    </nav>
-    <a href="login.html" class="header__login">Kiriw</a>
+          <a href="contact.html">Biz benen bag'laniw</a>
+          <a href="profile.html">Profilim</a>
+        </nav>
+        <a href="login.html" class="header__login" id="headerLogin">Kiriw</a>
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -786,6 +787,14 @@
   </div>
 
   <script>
+    (function () {
+      var loginLink = document.getElementById('headerLogin');
+      if (loginLink && getUser() && getToken()) {
+        loginLink.textContent = 'Profilim';
+        loginLink.href = 'profile.html';
+      }
+    })();
+
     var loginBtn = document.querySelector('.header__login');
     var modalOverlay = document.getElementById('loginModal');
     var modalClose = document.getElementById('modalClose');
