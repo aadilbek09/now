@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "reataran-backend"
+version = "1.0.0"
+description = "EATURKISH restoran platformasi uchun REST API backend"
+requires-python = ">=3.11"
+dependencies = [
+    "Django==5.0.6",
+    "djangorestframework==3.15.1",
+    "django-cors-headers==4.4.0",
+    "djangorestframework-simplejwt==5.3.1",
+    "django-jazzmin==3.0.1",
+    "drf-spectacular==0.30.0",
+    "drf-yasg==1.21.7",
+    "python-dotenv==1.0.1",
+    "gunicorn==22.0.0",
+    "whitenoise==6.12.0",
+    "pillow==10.3.0",
+    "dj-database-url==2.2.0",
+    "psycopg2-binary==2.9.9",
+    "sqlparse==0.5.5",
+    "PyJWT==2.13.0",
+    "PyYAML==6.0.3",
+    "setuptools==75.6.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["apps"]
+include = ["apps.*"]

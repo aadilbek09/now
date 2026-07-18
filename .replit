@@ -1,0 +1,16 @@
+entrypoint = "manage.py"
+
+[nix]
+channel = "stable-24_05"
+
+[run]
+command = ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+[[ports]]
+localPort = 8000
+externalPort = 80
+
+[deployment]
+build = ["sh", "-c", "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput"]
+run = ["gunicorn", "--config", "gunicorn.conf.py", "config.wsgi:application"]
+deploymentTarget = "cloudrun"

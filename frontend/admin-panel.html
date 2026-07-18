@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basqaruw paneli — Restaran</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__logo">
+      <div class="sidebar__logo-icon">R</div>
+      Restaran
+      <span>Admin</span>
+    </div>
+    <nav class="sidebar__nav">
+      <div class="sidebar__label">Tiykarǵı</div>
+      <button class="sidebar__item sidebar__item--active" data-tab="dashboard">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+      <div class="sidebar__label">Kontent</div>
+      <button class="sidebar__item" data-tab="posts">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Jariyalar
+      </button>
+      <button class="sidebar__item" data-tab="messages">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Xabarlar
+        <span class="badge" id="msgBadge">3</span>
+      </button>
+      <div class="sidebar__label">Basqa</div>
+      <button class="sidebar__item" data-tab="settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Sazlawlar
+      </button>
+    </nav>
+    <div class="sidebar__footer">
+      <div class="sidebar__user">
+        <div class="sidebar__user-avatar" id="sidebarAvatar">A</div>
+        <div class="sidebar__user-info">
+          <div class="sidebar__user-name" id="sidebarName">Admin</div>
+          <div class="sidebar__user-role" id="sidebarRole">Super Admin</div>
+        </div>
+        <button onclick="doLogout()" style="font-size:12px;color:var(--color-text-gray);background:none;border:none;cursor:pointer;">&#8592; Shıǵıw</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <div class="main">
+    <!-- ===== HEADER ===== -->
+    <header class="admin-header">
+      <div class="admin-header__left">
+        <button class="admin-header__hamburger" id="hamburger">
+          <span></span><span></span><span></span>
+        </button>
+        <h1 class="admin-header__title" id="pageTitle">Dashboard</h1>
+      </div>
+      <div class="admin-header__right">
+        <span class="admin-header__date" id="currentDate"></span>
+        <button class="admin-header__btn">
+          &#128276;
+          <span class="dot"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ===== CONTENT ===== -->
+    <div class="content">
+
+      <!-- ===================== DASHBOARD TAB ===================== -->
+      <div class="tab-content tab-content--active" id="tabDashboard">
+        <div class="section-header">
+          <div>
+            <h2 class="section-header__title">Dashboard</h2>
+            <p class="section-header__sub">Restaran statistikasi va savdo tahlili</p>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn--outline" onclick="window.location.reload()">&#8635; Yangilash</button>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card__header">
+              <div class="stat-card__icon stat-card__icon--red">&#128176;</div>
+              <span class="stat-card__change stat-card__change--up">+12.5%</span>
+            </div>
+            <div class="stat-card__value">156 800 000</div>
+            <div class="stat-card__label">Jámi dáramat (sum)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__header">
+              <div class="stat-card__icon stat-card__icon--blue">&#128230;</div>
+              <span class="stat-card__change stat-card__change--up">+8.2%</span>
+            </div>
+            <div class="stat-card__value">1 342</div>
+            <div class="stat-card__label">Jami buyurtmalar</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__header">
+              <div class="stat-card__icon stat-card__icon--green">&#128101;</div>
+              <span class="stat-card__change stat-card__change--up">+23.1%</span>
+            </div>
+            <div class="stat-card__value">892</div>
+            <div class="stat-card__label">Mijozlar soni</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__header">
+              <div class="stat-card__icon stat-card__icon--yellow">&#9733;</div>
+              <span class="stat-card__change stat-card__change--up">+0.3</span>
+            </div>
+            <div class="stat-card__value">4.8</div>
+            <div class="stat-card__label">O'rtacha reyting</div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-row">
+          <!-- Donut Chart -->
+          <div class="chart-card">
+            <h3 class="chart-card__title">Savdo tahlili (haftalik)</h3>
+            <div class="donut-container">
+              <div class="donut">
+                <svg width="180" height="180" viewBox="0 0 180 180">
+                  <circle cx="90" cy="90" r="72" fill="none" stroke="#1F1F1F" stroke-width="28"/>
+                  <circle cx="90" cy="90" r="72" fill="none" stroke="#3B82F6" stroke-width="28"
+                    stroke-dasharray="294.05 160.0"
+                    stroke-dashoffset="0" stroke-linecap="round"/>
+                  <circle cx="90" cy="90" r="72" fill="none" stroke="#F59E0B" stroke-width="28"
+                    stroke-dasharray="160.0 294.05"
+                    stroke-dashoffset="-294.05" stroke-linecap="round"/>
+                </svg>
+                <div class="donut__center">
+                  <span class="donut__value">100%</span>
+                  <span class="donut__label">savdo</span>
+                </div>
+              </div>
+              <div class="donut-legend">
+                <div class="donut-legend__item">
+                  <span class="donut-legend__dot" style="background:#3B82F6;"></span>
+                  Onlayn savdo
+                  <span class="donut-legend__val">65%</span>
+                </div>
+                <div class="donut-legend__item">
+                  <span class="donut-legend__dot" style="background:#F59E0B;"></span>
+                  Offlayn (joyida)
+                  <span class="donut-legend__val">35%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Products -->
+          <div class="chart-card">
+            <h3 class="chart-card__title">Eng ko'p sotilgan taomlar (Top 5)</h3>
+            <table class="top-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Taom nomi</th>
+                  <th>Sotilgan</th>
+                  <th>Daromad</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="rank rank--gold">1</span></td>
+                  <td><strong>Barbecue Shish kebab</strong></td>
+                  <td>287 ta</td>
+                  <td><strong>44 198 000</strong></td>
+                </tr>
+                <tr>
+                  <td><span class="rank rank--silver">2</span></td>
+                  <td><strong>Chicken Shawarma</strong></td>
+                  <td>234 ta</td>
+                  <td><strong>38 844 000</strong></td>
+                </tr>
+                <tr>
+                  <td><span class="rank rank--bronze">3</span></td>
+                  <td><strong>Iskender Kebab</strong></td>
+                  <td>198 ta</td>
+                  <td><strong>35 442 000</strong></td>
+                </tr>
+                <tr>
+                  <td><span class="rank rank--rest">4</span></td>
+                  <td><strong>Doner Kebab Wrap</strong></td>
+                  <td>176 ta</td>
+                  <td><strong>24 816 000</strong></td>
+                </tr>
+                <tr>
+                  <td><span class="rank rank--rest">5</span></td>
+                  <td><strong>Lahmacun Pizza</strong></td>
+                  <td>154 ta</td>
+                  <td><strong>19 712 000</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Marketing AI Prompt -->
+        <div class="ai-prompt-box" id="marketingPrompt">
+          <div class="ai-prompt-box__header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            AI Marketing Tahlil
+          </div>
+          <p>Onlayn savdolar <strong>65%</strong>, offlayn <strong>35%</strong>. Eng ko'p sotilgan: Shish kebab (287 ta), Shawarma (234 ta). Quyidagi tugmani bosib AI marketing g'oyalarini oling:</p>
+          <button class="ai-prompt-box__btn" onclick="generateMarketingIdeas()">Marketing g'oyalarini olish</button>
+          <div id="marketingResult" style="margin-top:12px;display:none;font-size:13px;line-height:1.7;background:#141414;padding:16px;border-radius:10px;border:1px solid #3D1F26;color:#D1D5DB;"></div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="recent-orders" style="margin-top:24px;">
+          <h3 class="recent-orders__title">Oxirgi buyurtmalar</h3>
+          <div id="recentOrdersList"></div>
+        </div>
+      </div>
+
+      <!-- ===================== POSTS TAB ===================== -->
+      <div class="tab-content" id="tabPosts">
+        <div class="section-header">
+          <div>
+            <h2 class="section-header__title">E'lonlar</h2>
+            <p class="section-header__sub">Barcha e'lon va yangiliklarni boshqaring</p>
+          </div>
+          <button class="btn btn--primary" onclick="openPostModal()">+ Yangi e'lon</button>
+        </div>
+
+        <!-- AI Prompt for Posts -->
+        <div class="ai-prompt-box">
+          <div class="ai-prompt-box__header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            AI bilan matn yaratish
+          </div>
+          <p>Tezkor maqola matni yaratish uchun mavzuni kiriting va AI generatsiya qilish tugmasini bosing.</p>
+          <input class="ai-prompt-box__input" id="aiTopicInput" placeholder="Mavzuni yozing, masalan: O'zbekistonda UX/UI dizaynerlar kelajagi..." style="min-height:44px;">
+          <button class="ai-prompt-box__btn" onclick="generatePostContent()">Matn yaratish</button>
+          <div id="aiPostResult" style="margin-top:12px;display:none;font-size:13px;line-height:1.7;background:#141414;padding:16px;border-radius:10px;border:1px solid #3D1F26;color:#D1D5DB;"></div>
+        </div>
+
+        <div class="posts-toolbar">
+          <input class="posts-search" id="postSearch" placeholder="E'lonlarni qidirish..." oninput="filterPosts()" />
+        </div>
+
+        <div class="posts-grid" id="postsGrid"></div>
+      </div>
+
+      <!-- ===================== MESSAGES TAB ===================== -->
+      <div class="tab-content" id="tabMessages">
+        <div class="section-header">
+          <div>
+            <h2 class="section-header__title">Xabarlar</h2>
+            <p class="section-header__sub">Mijozlardan kelgan xabarlar va arizalar</p>
+          </div>
+        </div>
+        <div class="messages-layout">
+          <div class="messages-list">
+            <div class="messages-list__header">
+              <span class="messages-list__title">Barcha xabarlar</span>
+              <span class="messages-list__count" id="msgCount">3 ta</span>
+            </div>
+            <div id="messagesList"></div>
+          </div>
+          <div class="msg-detail" id="msgDetail">
+            <div class="msg-detail__header">
+              <h3 class="msg-detail__name" id="msgDetailName">Xabarni tanlang</h3>
+              <p class="msg-detail__meta" id="msgDetailMeta"></p>
+            </div>
+            <div class="msg-detail__body" id="msgDetailBody">
+              <div class="empty-state">
+                <div class="empty-state__icon">&#128172;</div>
+                <p class="empty-state__text">Javob yozish uchun chap tarafdagi xabarni tanlang</p>
+              </div>
+            </div>
+            <div class="msg-detail__reply" id="msgReplyArea" style="display:none;">
+              <textarea id="msgReplyInput" placeholder="Javobingizni yozing..." rows="3"></textarea>
+              <div class="msg-detail__reply-actions">
+                <button class="msg-detail__ai-btn" onclick="generateReply()">AI javob yozish</button>
+                <button class="msg-detail__reply-btn" onclick="sendReply()">Yuborish</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== SETTINGS TAB ===================== -->
+      <div class="tab-content" id="tabSettings">
+        <div class="section-header">
+          <div>
+            <h2 class="section-header__title">Sozlamalar</h2>
+            <p class="section-header__sub">Boshqaruv paneli sozlamalari</p>
+          </div>
+        </div>
+        <div style="background:var(--color-surface);border-radius:14px;padding:24px;border:1px solid var(--color-border);max-width:600px;">
+          <h3 style="margin-bottom:16px;font-size:15px;color:var(--color-text);">Shaxsiy ma'lumotlar</h3>
+          <div class="form-group">
+            <label>Foydalanuvchi nomi</label>
+            <input type="text" id="settingsUsername" placeholder="Foydalanuvchi nomi" />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="settingsEmail" placeholder="Email manzil" />
+          </div>
+          <div class="form-group">
+            <label>Telefon</label>
+            <input type="text" id="settingsPhone" placeholder="Telefon raqami" />
+          </div>
+          <button class="btn btn--primary" onclick="saveProfile()">Saqlash</button>
+
+          <hr style="border:none;border-top:1px solid var(--color-border);margin:24px 0;" />
+
+          <h3 style="margin-bottom:16px;font-size:15px;color:var(--color-text);">Parolni o'zgartirish</h3>
+          <div class="form-group">
+            <label>Joriy parol</label>
+            <input type="password" id="settingsOldPassword" placeholder="Joriy parol" />
+          </div>
+          <div class="form-group">
+            <label>Yangi parol</label>
+            <input type="password" id="settingsNewPassword" placeholder="Yangi parol" />
+          </div>
+          <button class="btn btn--primary" onclick="changePassword()">Parolni yangilash</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== POST MODAL ===== -->
+  <div class="modal-overlay" id="postModal">
+    <div class="admin-modal">
+      <button class="modal__close" onclick="closePostModal()">&times;</button>
+      <h3 class="modal__title" id="postModalTitle">Yangi e'lon</h3>
+      <form onsubmit="savePost(event)">
+        <input type="hidden" id="postEditId" />
+        <div class="form-group">
+          <label>Sarlavha</label>
+          <input type="text" id="postTitle" placeholder="E'lon sarlavhasi" required />
+        </div>
+        <div class="form-group">
+          <label>Qisqa matn</label>
+          <textarea id="postDesc" placeholder="Qisqa tavsif (3-4 qator)" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>To'liq matn</label>
+          <textarea id="postContent" placeholder="To'liq maqola matni" rows="6"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Rasm</label>
+          <input type="file" id="postImage" accept="image/*" onchange="previewPostImage(this)" />
+          <div id="postImagePreview" style="margin-top:8px;"></div>
+        </div>
+        <div class="form-group">
+          <label>Kategoriya</label>
+          <select id="postCategory">
+            <option value="yangiliklar">Yangiliklar</option>
+            <option value="aksiya">Aksiya</option>
+            <option value="menu">Menu</option>
+            <option value="tadbirlar">Tadbirlar</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" onclick="closePostModal()">Bekor qilish</button>
+          <button type="submit" class="btn-primary">Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script>
+    // ===== STATE =====
+    var posts = [];
+    var messages = [];
+    var allOrders = [];
+    var dashboardStats = {};
+    var salesChannel = {};
+    var topProducts = [];
+    var selectedMsgId = null;
+    var currentUserData = null;
+
+    // ===== AUTH CHECK =====
+    (function authCheck() {
+      var user = getUser();
+      if (!user || user.role !== 'admin') {
+        window.location.href = 'login.html';
+        return;
+      }
+      currentUserData = user;
+      document.getElementById('sidebarName').textContent = user.username || 'Admin';
+      document.getElementById('sidebarRole').textContent = user.role || 'admin';
+      document.getElementById('sidebarAvatar').textContent = (user.username || 'A').charAt(0).toUpperCase();
+    })();
+
+    // ===== LOGOUT =====
+    function doLogout() {
+      if (!confirm('Tizimdan chiqishni xohlaysizmi?')) return;
+      clearTokens();
+      window.location.href = 'login.html';
+    }
+
+    // ===== FORMAT HELPERS =====
+    function formatMoney(val) {
+      var n = Number(val) || 0;
+      var s = n.toString();
+      var result = '';
+      for (var i = 0; i < s.length; i++) {
+        if (i > 0 && (s.length - i) % 3 === 0) result += ' ';
+        result += s[i];
+      }
+      return result + ' so\'m';
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      var d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      var months = ['Yan','Fev','Mar','Apr','May','Iyun','Iyul','Avg','Sen','Okt','Nov','Dek'];
+      return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    }
+
+    function formatTime(dateStr) {
+      if (!dateStr) return '';
+      var d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    }
+
+    // ===== DASHBOARD: STATS =====
+    function loadDashboardStats() {
+      apiGet('/orders/admin/stats/dashboard').then(function(data) {
+        dashboardStats = data;
+        var cards = document.querySelectorAll('.stat-card__value');
+        if (cards[0]) cards[0].textContent = formatMoney(data.total_revenue);
+        if (cards[1]) cards[1].textContent = data.total_orders || 0;
+        if (cards[2]) cards[2].textContent = data.total_customers || 0;
+        if (cards[3]) cards[3].textContent = data.avg_rating || '0.0';
+      }).catch(function(e) { console.error('Stats load error:', e); });
+    }
+
+    // ===== DASHBOARD: SALES CHANNEL (DONUT) =====
+    function loadSalesChannel() {
+      apiGet('/orders/admin/stats/sales-channel').then(function(data) {
+        salesChannel = data;
+        var onlinePct = data.online ? data.online.percent : 0;
+        var offlinePct = data.offline ? data.offline.percent : 0;
+        var total = (onlinePct + offlinePct) || 100;
+        var circumference = 2 * Math.PI * 72;
+        var onlineLen = (onlinePct / total) * circumference;
+        var offlineLen = (offlinePct / total) * circumference;
+
+        var svg = document.querySelector('.donut svg');
+        if (svg) {
+          var circles = svg.querySelectorAll('circle');
+          if (circles[1]) {
+            circles[1].setAttribute('stroke-dasharray', onlineLen + ' ' + (circumference - onlineLen));
+            circles[1].setAttribute('stroke-dashoffset', '0');
+          }
+          if (circles[2]) {
+            circles[2].setAttribute('stroke-dasharray', offlineLen + ' ' + (circumference - offlineLen));
+            circles[2].setAttribute('stroke-dashoffset', '-' + onlineLen);
+          }
+        }
+
+        var legendVals = document.querySelectorAll('.donut-legend__val');
+        if (legendVals[0]) legendVals[0].textContent = Math.round(onlinePct) + '%';
+        if (legendVals[1]) legendVals[1].textContent = Math.round(offlinePct) + '%';
+      }).catch(function(e) { console.error('Sales channel load error:', e); });
+    }
+
+    // ===== DASHBOARD: TOP PRODUCTS =====
+    function loadTopProducts() {
+      apiGet('/orders/admin/stats/top-products').then(function(data) {
+        topProducts = data || [];
+        var tbody = document.querySelector('.top-table tbody');
+        if (!tbody) return;
+        if (topProducts.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--color-text-gray);padding:20px;">Ma\'lumot yo\'q</td></tr>';
+          return;
+        }
+        var rankClasses = ['rank--gold','rank--silver','rank--bronze','rank--rest','rank--rest'];
+        tbody.innerHTML = topProducts.map(function(p, i) {
+          return '<tr>' +
+            '<td><span class="' + (rankClasses[i] || 'rank--rest') + '">' + (i + 1) + '</span></td>' +
+            '<td><strong>' + (p.product_name || '-') + '</strong></td>' +
+            '<td>' + (p.total_quantity || 0) + ' ta</td>' +
+            '<td>-</td>' +
+          '</tr>';
+        }).join('');
+      }).catch(function(e) { console.error('Top products load error:', e); });
+    }
+
+    // ===== DASHBOARD: RECENT ORDERS =====
+    function loadRecentOrders() {
+      apiGet('/orders/admin/orders').then(function(data) {
+        var orderList = Array.isArray(data) ? data : (data.results || []);
+        allOrders = orderList;
+        var recent = orderList.slice(0, 5);
+        var list = document.getElementById('recentOrdersList');
+        if (!list) return;
+        if (recent.length === 0) {
+          list.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#128230;</div><p class="empty-state__text">Hozircha buyurtmalar yo\'q</p></div>';
+          return;
+        }
+        var statusMap = { completed: 'order-item__status--completed', pending: 'order-item__status--pending', cancelled: 'order-item__status--cancelled', new: 'order-item__status--pending', processing: 'order-item__status--pending' };
+        var statusText = { completed: 'Yakunlangan', pending: 'Kutilmoqda', cancelled: 'Bekor qilingan', new: 'Yangi', processing: 'Jarayonda' };
+        list.innerHTML = recent.map(function(o) {
+          var items = o.items || [];
+          var firstItem = items[0] || {};
+          var meta = items.length > 0 ? items.length + ' mahsulot' : '-';
+          var price = o.total_amount ? formatMoney(o.total_amount) : '-';
+          var st = o.status || 'pending';
+          return '<div class="order-item">' +
+            '<div class="order-item__info">' +
+              '<div class="order-item__name">' + (o.customer_name || 'Mijoz') + '</div>' +
+              '<div class="order-item__meta">' + meta + ' &middot; ' + formatDate(o.created_at) + '</div>' +
+            '</div>' +
+            '<span class="order-item__price">' + price + '</span>' +
+            '<span class="order-item__status ' + (statusMap[st] || '') + '">' + (statusText[st] || st) + '</span>' +
+          '</div>';
+        }).join('');
+      }).catch(function(e) { console.error('Orders load error:', e); });
+    }
+
+    // ===== POSTS =====
+    function loadPosts() {
+      apiGet('/news/posts').then(function(data) {
+        posts = Array.isArray(data) ? data : (data.results || []);
+        renderPosts();
+      }).catch(function(e) { console.error('Posts load error:', e); });
+    }
+
+    function renderPosts() {
+      var grid = document.getElementById('postsGrid');
+      var search = (document.getElementById('postSearch').value || '').toLowerCase();
+      var filtered = posts.filter(function(p) {
+        return p.title.toLowerCase().includes(search) || (p.desc || '').toLowerCase().includes(search);
+      });
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#128240;</div><p class="empty-state__text">Hech qanday e\'lon topilmadi</p></div>';
+        return;
+      }
+      grid.innerHTML = filtered.map(function(p) {
+        var dateStr = p.date || formatDate(p.created_at) || '';
+        var imgSrc = p.image || 'https://images.unsplash.com/photo-1558030089-9b0b1c2adf8f?w=600&q=80';
+        return '<div class="post-card">' +
+          '<img class="post-card__img" src="' + imgSrc + '" alt="' + p.title + '" onerror="this.style.display=\'none\'" />' +
+          '<div class="post-card__body">' +
+            '<div class="post-card__title">' + p.title + '</div>' +
+            '<div class="post-card__desc">' + (p.desc || '') + '</div>' +
+            '<div class="post-card__footer">' +
+              '<span class="post-card__date">&#128197; ' + dateStr + '<br/><span style="font-size:11px;color:var(--color-primary);font-weight:500;">' + (p.category || '') + '</span></span>' +
+              '<div class="post-card__actions">' +
+                '<button class="post-card__edit" onclick="editPost(' + p.id + ')">&#9998;</button>' +
+                '<button class="post-card__del" onclick="deletePost(' + p.id + ')">&#128465;</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function filterPosts() { renderPosts(); }
+
+    function openPostModal(data) {
+      var modal = document.getElementById('postModal');
+      document.getElementById('postImage').value = '';
+      var preview = document.getElementById('postImagePreview');
+      if (data) {
+        document.getElementById('postModalTitle').textContent = 'E\'lonni tahrirlash';
+        document.getElementById('postEditId').value = data.id;
+        document.getElementById('postTitle').value = data.title;
+        document.getElementById('postDesc').value = data.desc || '';
+        document.getElementById('postContent').value = data.content || '';
+        document.getElementById('postCategory').value = data.category || 'yangiliklar';
+        if (data.image) {
+          preview.innerHTML = '<img src="' + data.image + '" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid var(--color-border);" />';
+        } else {
+          preview.innerHTML = '';
+        }
+      } else {
+        document.getElementById('postModalTitle').textContent = 'Yangi e\'lon';
+        document.getElementById('postEditId').value = '';
+        document.getElementById('postTitle').value = '';
+        document.getElementById('postDesc').value = '';
+        document.getElementById('postContent').value = '';
+        document.getElementById('postCategory').value = 'yangiliklar';
+        preview.innerHTML = '';
+      }
+      modal.classList.add('open');
+    }
+
+    function closePostModal() {
+      document.getElementById('postModal').classList.remove('open');
+    }
+
+    function previewPostImage(input) {
+      var preview = document.getElementById('postImagePreview');
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          preview.innerHTML = '<img src="' + e.target.result + '" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid var(--color-border);" />';
+        };
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        preview.innerHTML = '';
+      }
+    }
+
+    function savePost(e) {
+      e.preventDefault();
+      var id = document.getElementById('postEditId').value;
+      var formData = new FormData();
+      formData.append('title', document.getElementById('postTitle').value);
+      formData.append('desc', document.getElementById('postDesc').value);
+      formData.append('content', document.getElementById('postContent').value);
+      formData.append('category', document.getElementById('postCategory').value);
+
+      var fileInput = document.getElementById('postImage');
+      if (fileInput.files && fileInput.files[0]) {
+        formData.append('image', fileInput.files[0]);
+      }
+
+      var req;
+      if (id) {
+        req = apiPatchFormData('/news/admin/posts/' + id, formData);
+      } else {
+        req = apiPostFormData('/news/admin/posts', formData);
+      }
+      req.then(function() {
+        closePostModal();
+        loadPosts();
+      }).catch(function(e) {
+        console.error('Save post error:', e);
+        if (e && e.json) {
+          e.json().then(function(errData) {
+            console.error('Server xatolik javobi:', JSON.stringify(errData));
+            alert('Server xatolik: ' + JSON.stringify(errData));
+          }).catch(function() {
+            e.text().then(function(text) {
+              console.error('Server xatolik matni:', text);
+              alert('Server xatolik: ' + text);
+            });
+          });
+        } else {
+          alert('Saqlashda xatolik yuz berdi: ' + (e.message || ''));
+        }
+      });
+    }
+
+    function editPost(id) {
+      var p = posts.find(function(x) { return x.id === id; });
+      if (p) openPostModal(p);
+    }
+
+    function deletePost(id) {
+      if (!confirm('Bu e\'lonni o\'chirasizmi?')) return;
+      apiDelete('/news/admin/posts/' + id).then(function() {
+        loadPosts();
+      }).catch(function(e) {
+        console.error('Delete post error:', e);
+        alert('O\'chirishda xatolik yuz berdi');
+      });
+    }
+
+    // ===== AI POST CONTENT GENERATOR =====
+    function generatePostContent() {
+      var topic = document.getElementById('aiTopicInput').value.trim();
+      var resultDiv = document.getElementById('aiPostResult');
+      if (!topic) {
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = '<span style="color:var(--color-danger);">Iltimos, mavzuni kiriting!</span>';
+        return;
+      }
+
+      var prompts = [
+        'Mening veb-saytimning "Posts" (E\'lonlar) bo\'limi uchun maqola matni kerak.',
+        'Mavzu: ' + topic,
+        'Menga quyidagilarni tayyorlab ber:',
+        '',
+        'Sarlavha (Title): Maksimal 10-12 ta so\'zdan iborat, jozibali sarlavha.',
+        '',
+        'Qisqa matn (Short description): Login paneldagi blok ichiga sig\'adigan, mavzuni ochib beruvchi qisqa preview matn (3-4 qator).',
+        '',
+        'To\'liq maqola matni.'
+      ].join('\n');
+
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = '<div style="display:flex;gap:8px;align-items:center;color:var(--color-text-gray);"><div style="width:16px;height:16px;border:2px solid var(--color-primary);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div> AI matn tayyorlamoqda...</div>';
+
+      setTimeout(function() {
+        var titles = [
+          topic + ': Kelajakdagi eng muhim trendlar',
+          topic + ' — Nima uchun bu muhim?',
+          topic + ': Boshlovchilar uchun qo\'llanma',
+          topic + ' - 2026 yilgi eng so\'nggi yangiliklar',
+          topic + ': Bilishingiz kerak bo\'lgan hamma narsa'
+        ];
+        var title = titles[Math.floor(Math.random() * titles.length)];
+        var descs = [
+          'Bugungi kunda ' + topic.toLowerCase() + ' tobora ommalashib bormoqda. Ushbu maqolada siz ushbu mavzu haqida batafsil ma\'lumot olasiz va eng muhim jihatlarni bilib olasiz.',
+          topic + ' sohasidagi eng so\'nggi yangiliklar va o\'zgarishlar bilan tanishing. Mutaxassislar fikri va amaliy tavsiyalar bilan to\'ldirilgan ushbu maqolani o\'qib chiqing.',
+          'Restaran jamoasi siz uchun ' + topic.toLowerCase() + ' mavzusida batafsil ma\'lumot tayyorladi. Keling, ushbu qiziqarli mavzuni birgalikda o\'rganamiz.'
+        ];
+        var desc = descs[Math.floor(Math.random() * descs.length)];
+        var fullContent = topic + ' — bu bugungi kunda dolzarb bo\'lgan mavzulardan biridir.\n\nUshbu maqolada biz ' + topic.toLowerCase() + ' ning asosiy jihatlari, uning afzalliklari va kelajakdagi istiqbollari haqida so\'z yuritamiz.\n\nBizning mutaxassislarimiz tomonidan tayyorlangan tahliliy ma\'lumotlarga asoslanib, siz ushbu soha haqida to\'liq tasavvurga ega bo\'lasiz.\n\nRestaran jamoasi sifatida biz har doim eng so\'nggi trendlarni kuzatib boramiz va siz bilan eng qimmatli ma\'lumotlarni baham ko\'ramiz.';
+
+        resultDiv.innerHTML =
+          '<div style="margin-bottom:10px;"><strong style="color:var(--color-primary);">&#128273; Tayyor prompt (AI ga yuborish uchun):</strong></div>' +
+          '<div style="background:#1A1A1A;padding:12px;border-radius:8px;font-size:12px;line-height:1.6;margin-bottom:12px;white-space:pre-wrap;word-break:break-word;color:#D1D5DB;">' + prompts + '</div>' +
+          '<div style="margin-top:12px;border-top:1px solid var(--color-border);padding-top:12px;">' +
+            '<p><strong>Sarlavha:</strong> ' + title + '</p>' +
+            '<p style="margin-top:6px;"><strong>Qisqa matn:</strong> ' + desc + '</p>' +
+            '<p style="margin-top:6px;"><strong>To\'liq matn:</strong><br/>' + fullContent.replace(/\n/g, '<br/>') + '</p>' +
+          '</div>' +
+          '<div style="margin-top:12px;">' +
+            '<button class="ai-prompt-box__btn" onclick="fillPostForm(\'' + title.replace(/'/g, "\\'") + '\',\'' + desc.replace(/'/g, "\\'") + '\',\'' + fullContent.replace(/\n/g, '\\n').replace(/'/g, "\\'") + '\')">&#10003; Ma\'lumotlarni formaga yozish</button>' +
+          '</div>';
+      }, 800);
+    }
+
+    function fillPostForm(title, desc, content) {
+      document.getElementById('postTitle').value = title;
+      document.getElementById('postDesc').value = desc;
+      document.getElementById('postContent').value = content;
+      closePostModal();
+      openPostModal();
+    }
+
+    // ===== MARKETING IDEAS =====
+    function generateMarketingIdeas() {
+      var resultDiv = document.getElementById('marketingResult');
+      var onlinePct = salesChannel.online ? Math.round(salesChannel.online.percent) : 65;
+      var offlinePct = salesChannel.offline ? Math.round(salesChannel.offline.percent) : 35;
+      var topNames = topProducts.slice(0, 5).map(function(p) { return p.product_name + ' (' + p.total_quantity + ' ta)'; }).join(', ') || 'Shish kebab (287 ta), Shawarma (234 ta)';
+
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = '<div style="display:flex;gap:8px;align-items:center;color:var(--color-text-gray);"><div style="width:16px;height:16px;border:2px solid var(--color-primary);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></div> AI tahlil qilmoqda...</div>';
+
+      setTimeout(function() {
+        resultDiv.innerHTML =
+          '<div style="margin-bottom:10px;"><strong style="color:var(--color-primary);">&#128273; AI Marketing Prompt (tahlil uchun):</strong></div>' +
+          '<div style="background:#1A1A1A;padding:12px;border-radius:8px;font-size:12px;line-height:1.6;margin-bottom:12px;color:#D1D5DB;">' +
+            '<p><strong>Ma\'lumot:</strong></p>' +
+            '<p>Onlayn savdolar: ' + onlinePct + '%</p>' +
+            '<p>Offlayn (joyida) savdolar: ' + offlinePct + '%</p>' +
+            '<p>Eng ko\'p sotilgan taomlar (Top 5): ' + topNames + '</p>' +
+          '</div>' +
+          '<div style="margin-top:12px;border-top:1px solid var(--color-border);padding-top:12px;">' +
+            '<p style="font-weight:600;color:#E5E5E5;margin-bottom:8px;">&#128161; Tavsiyalar:</p>' +
+            '<p style="font-weight:600;color:var(--color-primary);margin-top:10px;">&#128204; Offlayn savdolarni ko\'tarish uchun 3 ta g\'oya:</p>' +
+            '<p style="margin:4px 0 0 16px;font-size:13px;">1. <strong>"Loyal Mehmon" dasturi</strong> — joyida 5 marta ovqatlangan mijozga 6-bepul taom. Bu mijozlarni qayta-qayta kelishga undaydi.</p>' +
+            '<p style="margin:4px 0 0 16px;font-size:13px;">2. <strong>Hafta ichi maxsus aksiyalar</strong> — Dushanba-Juma kunlari soat 12:00-16:00 oralig\'ida barcha taomlarga 15% chegirma. Ofis xodimlarini jalb qiladi.</p>' +
+            '<p style="margin:4px 0 0 16px;font-size:13px;">3. <strong>"Taom + Ichimlik" kombo</strong> — Eng ko\'p sotilgan taomlarga maxsus ichimlikni 20% chegirma bilan taklif qilish.</p>' +
+            '<p style="font-weight:600;color:var(--color-online);margin-top:10px;">&#128204; Onlayn sotuvlarni ushlab qolish uchun 2 ta tavsiya:</p>' +
+            '<p style="margin:4px 0 0 16px;font-size:13px;">1. <strong>Yetkazib berish abonementi</strong> — Oylik 49 000 so\'m evaziga bepul yetkazib berish va maxsus chegirmalar.</p>' +
+            '<p style="margin:4px 0 0 16px;font-size:13px;">2. <strong>Shaxsiy menyu</strong> — Mijozning oldingi buyurtmalari asosida AI yordamida shaxsiy tavsiyalar berish.</p>' +
+          '</div>';
+      }, 1000);
+    }
+
+    // ===== MESSAGES =====
+    function loadMessages() {
+      apiGet('/contact/admin/messages').then(function(data) {
+        messages = Array.isArray(data) ? data : (data.results || []);
+        renderMessages();
+      }).catch(function(e) { console.error('Messages load error:', e); });
+    }
+
+    function renderMessages() {
+      var list = document.getElementById('messagesList');
+      var unread = 0;
+      var colors = ['blue','green','yellow','red','blue','green'];
+      list.innerHTML = messages.map(function(m, i) {
+        if (!m.is_read) unread++;
+        var initials = (m.name || '??').split(' ').map(function(w) { return w.charAt(0); }).join('').toUpperCase().slice(0, 2);
+        var timeStr = formatTime(m.created_at) || formatDate(m.created_at) || '';
+        return '<div class="msg-item' + (m.id === selectedMsgId ? ' msg-item--active' : '') + '" onclick="selectMessage(' + m.id + ')">' +
+          '<div class="msg-item__avatar msg-item__avatar--' + (colors[i % colors.length]) + '">' + initials + '</div>' +
+          '<div class="msg-item__info">' +
+            '<div class="msg-item__name">' + (m.name || 'Noma\'lum') + (!m.is_read ? ' <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--color-primary);vertical-align:middle;"></span>' : '') + '</div>' +
+            '<div class="msg-item__preview">' + (m.text || '') + '</div>' +
+          '</div>' +
+          '<div class="msg-item__time">' + timeStr + '</div>' +
+        '</div>';
+      }).join('');
+      document.getElementById('msgCount').textContent = messages.length + ' ta';
+      document.getElementById('msgBadge').textContent = unread;
+      document.getElementById('msgBadge').style.display = unread > 0 ? 'inline' : 'none';
+    }
+
+    function selectMessage(id) {
+      selectedMsgId = id;
+      var m = messages.find(function(x) { return x.id === id; });
+      if (!m) return;
+
+      document.getElementById('msgDetailName').textContent = m.name || 'Noma\'lum';
+      document.getElementById('msgDetailMeta').textContent = formatDate(m.created_at) + ' | ' + (m.text || '').slice(0, 30) + '...';
+      document.getElementById('msgDetailBody').innerHTML = '<div style="background:#1A1A1A;padding:16px;border-radius:10px;"><p class="msg-detail__text" style="color:#E5E5E5;">' + (m.text || '') + '</p></div>';
+      document.getElementById('msgReplyArea').style.display = 'block';
+      document.getElementById('msgReplyInput').value = '';
+      document.getElementById('msgReplyInput').placeholder = (m.name || 'Mijoz') + ' ga javob yozing...';
+
+      if (!m.is_read) {
+        apiPatch('/contact/admin/messages/' + m.id + '/read').then(function() {
+          m.is_read = true;
+          renderMessages();
+        }).catch(function(e) { console.error('Mark read error:', e); });
+      }
+
+      renderMessages();
+    }
+
+    function sendReply() {
+      var input = document.getElementById('msgReplyInput');
+      var text = input.value.trim();
+      if (!text) return;
+      var m = messages.find(function(x) { return x.id === selectedMsgId; });
+      if (!m) return;
+      alert('Javob "' + (m.name || 'Mijoz') + '" ga yuborildi:\n\n' + text);
+      input.value = '';
+      document.getElementById('msgDetailBody').innerHTML =
+        '<div style="background:#1A1A1A;padding:16px;border-radius:10px;margin-bottom:12px;"><p class="msg-detail__text" style="color:#E5E5E5;">' + (m.text || '') + '</p></div>' +
+        '<div style="background:#0F2740;padding:16px;border-radius:10px;border:1px solid #1E3A5F;">' +
+          '<p style="font-size:12px;font-weight:600;color:#60A5FA;margin-bottom:4px;">Sizning javobingiz:</p>' +
+          '<p style="font-size:13px;color:#E5E5E5;">' + text + '</p></div>';
+    }
+
+    function generateReply() {
+      var m = messages.find(function(x) { return x.id === selectedMsgId; });
+      if (!m) return;
+      var input = document.getElementById('msgReplyInput');
+      input.value = 'Assalomu alaykum, ' + (m.name || 'Mijoz') + '! Murojaatingiz uchun katta rahmat. Sizning so\'rovingizni ko\'rib chiqdik va quyidagilarni ma\'lum qilamiz:\n\nSizga tez orada aloqaga chiqamiz va barcha savollaringizga batafsil javob beramiz. Kutilgan vaqt uchun uzr so\'raymiz.\n\nHurmat bilan, Restaran jamoasi.';
+    }
+
+    // ===== SETTINGS =====
+    function loadSettings() {
+      apiGet('/accounts/auth/me').then(function(data) {
+        currentUserData = data;
+        document.getElementById('settingsUsername').value = data.username || '';
+        document.getElementById('settingsEmail').value = data.email || '';
+        document.getElementById('settingsPhone').value = data.phone || '';
+        document.getElementById('sidebarName').textContent = data.username || 'Admin';
+        document.getElementById('sidebarAvatar').textContent = (data.username || 'A').charAt(0).toUpperCase();
+      }).catch(function(e) { console.error('Settings load error:', e); });
+    }
+
+    function saveProfile() {
+      var payload = {
+        username: document.getElementById('settingsUsername').value,
+        email: document.getElementById('settingsEmail').value,
+        phone: document.getElementById('settingsPhone').value
+      };
+      apiPatch('/accounts/auth/me/update', payload).then(function(data) {
+        if (data && data.username) {
+          document.getElementById('sidebarName').textContent = data.username;
+          document.getElementById('sidebarAvatar').textContent = data.username.charAt(0).toUpperCase();
+        }
+        alert('Profil muvaffaqiyatli yangilandi!');
+      }).catch(function(e) {
+        console.error('Save profile error:', e);
+        alert('Saqlashda xatolik yuz berdi');
+      });
+    }
+
+    function changePassword() {
+      var oldP = document.getElementById('settingsOldPassword').value;
+      var newP = document.getElementById('settingsNewPassword').value;
+      if (!oldP || !newP) {
+        alert('Iltimos, barcha parol maydonlarini to\'ldiring');
+        return;
+      }
+      if (newP.length < 6) {
+        alert('Yangi parol kamida 6 ta belgi bo\'lishi kerak');
+        return;
+      }
+      apiPost('/accounts/auth/change-password', { old_password: oldP, new_password: newP }).then(function() {
+        alert('Parol muvaffaqiyatli o\'zgartirildi!');
+        document.getElementById('settingsOldPassword').value = '';
+        document.getElementById('settingsNewPassword').value = '';
+      }).catch(function(e) {
+        console.error('Change password error:', e);
+        alert('Parolni o\'zgartirishda xatolik. Joriy parol noto\'g\'ri bo\'lishi mumkin.');
+      });
+    }
+
+    // ===== TAB NAVIGATION =====
+    var tabTitles = {
+      dashboard: 'Dashboard',
+      posts: 'E\'lonlar',
+      messages: 'Xabarlar',
+      settings: 'Sozlamalar'
+    };
+
+    document.querySelectorAll('.sidebar__item[data-tab]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.sidebar__item').forEach(function(b) { b.classList.remove('sidebar__item--active'); });
+        this.classList.add('sidebar__item--active');
+        var tab = this.getAttribute('data-tab');
+        document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('tab-content--active'); });
+        var el = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+        if (el) el.classList.add('tab-content--active');
+        document.getElementById('pageTitle').textContent = tabTitles[tab] || tab;
+        document.getElementById('sidebar').classList.remove('sidebar--open');
+
+        if (tab === 'settings') loadSettings();
+      });
+    });
+
+    // ===== SIDEBAR TOGGLE (mobile) =====
+    document.getElementById('hamburger').addEventListener('click', function() {
+      document.getElementById('sidebar').classList.toggle('sidebar--open');
+    });
+
+    // ===== DATE =====
+    function updateDate() {
+      var d = new Date();
+      var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      document.getElementById('currentDate').textContent = days[d.getDay()] + ', ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+    }
+
+    // ===== INIT =====
+    updateDate();
+    loadDashboardStats();
+    loadSalesChannel();
+    loadTopProducts();
+    loadRecentOrders();
+    loadPosts();
+    loadMessages();
+  </script>
+</body>
+</html>
