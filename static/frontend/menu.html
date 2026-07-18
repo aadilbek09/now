@@ -137,6 +137,78 @@
 
   <script src="api.js"></script>
   <script>
+    function openProduct(item) {
+      var modal = document.getElementById('productModal');
+      if (!modal) return;
+      var imgEl = document.getElementById('productModalImg');
+      var catEl = document.getElementById('productModalCategory');
+      var nameEl = document.getElementById('productModalName');
+      var descEl = document.getElementById('productModalDesc');
+      var priceEl = document.getElementById('productModalPrice');
+      var orderBtn = document.getElementById('productModalOrder');
+
+      var id = item.getAttribute('data-id');
+      var name = item.getAttribute('data-name') || '';
+      var price = item.getAttribute('data-price') || '';
+      var category = item.getAttribute('data-category') || '';
+      var desc = item.getAttribute('data-description') || 'Ta\'rif mavjud emas.';
+      var img = item.getAttribute('data-img') || '';
+      if (!img) img = 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80';
+
+      window.currentProductId = id;
+
+      imgEl.src = img;
+      imgEl.alt = name;
+      catEl.textContent = category;
+      nameEl.textContent = name;
+      descEl.textContent = desc;
+      priceEl.textContent = price;
+
+      orderBtn.onclick = function() {
+        var msg = 'Salem! Men buyurtpa berejaqpan:\n\n' + name + ' - ' + price + '\n\nKategoriya: ' + category + '\n\nTelefon: +998912555309 yoki +998933350805';
+        window.open('https://wa.me/998912555309?text=' + encodeURIComponent(msg), '_blank');
+      };
+
+      if (document.getElementById('productLikeBtn')) {
+        document.getElementById('productLikeBtn').className = 'product-like';
+        document.getElementById('productDislikeBtn').className = 'product-dislike';
+        document.getElementById('productLikeCount').textContent = '0';
+        document.getElementById('productDislikeCount').textContent = '0';
+      }
+      var stars = document.querySelectorAll('#productStars .star');
+      stars.forEach(function(s) { s.className = 'star'; });
+      if (document.getElementById('productStarsLabel')) {
+        document.getElementById('productStarsLabel').textContent = 'Baha beriw';
+      }
+      if (document.getElementById('productCommentInput')) {
+        document.getElementById('productCommentInput').value = '';
+      }
+      var commentsEl = document.getElementById('productComments');
+      commentsEl.innerHTML = '<p style="text-align:center;color:#999;font-size:13px;">Izohlar yuklanmoqda...</p>';
+
+      if (id) {
+        apiGet('/menu/products/' + id + '/comments').then(function(comments) {
+          var arr = Array.isArray(comments) ? comments : [];
+          if (!arr.length) {
+            commentsEl.innerHTML = '<p style="text-align:center;color:#999;font-size:13px;">Hali izohlar yo\'q.</p>';
+            return;
+          }
+          commentsEl.innerHTML = arr.map(function(c) {
+            return '<div class="product-comment-item">' +
+              '<p style="font-size:12px;color:#999;">' + (c.created_at ? new Date(c.created_at).toLocaleDateString() : '') + '</p>' +
+              '<p>' + (c.text || '') + '</p>' +
+            '</div>';
+          }).join('');
+        }).catch(function() {
+          commentsEl.innerHTML = '<p style="text-align:center;color:#999;font-size:13px;">Izohlarni yuklashda xatolik.</p>';
+        });
+      } else {
+        commentsEl.innerHTML = '<p style="text-align:center;color:#999;font-size:13px;">Hali izohlar yo\'q.</p>';
+      }
+
+      modal.classList.add('open');
+    }
+
     (function() {
       var ham = document.getElementById('hamburger');
       var nav = document.getElementById('headerNav');
