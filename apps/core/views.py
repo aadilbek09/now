@@ -64,10 +64,13 @@ class RestaurantInfoView(APIView):
     def get(self, request):
         info = RestaurantInfo.objects.first()
         if not info:
-            return Response(
-                {'detail': "Restoran mag'liwmatlari ele kiritilmegen!."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            return Response({
+                'address': 'Toshkent shahri, Amir Temur ko\'chasi 15',
+                'phone': '+998 90 000 00 00',
+                'working_hours': '09:00 - 23:00',
+                'instagram_url': '',
+                'facebook_url': '',
+            })
         return Response(RestaurantInfoSerializer(info).data)
 
 

@@ -54,8 +54,8 @@ class PostDetailView(generics.RetrieveAPIView):
     name='post',
     decorator=swagger_auto_schema(tags=TAG, operation_summary="Yangi post qo'shish (Admin)"),
 )
-class AdminPostCreateView(generics.CreateAPIView):
-    """POST /api/admin/posts — Yangi post qo'shish."""
+class AdminPostCreateView(generics.ListCreateAPIView):
+    """GET/POST /api/admin/posts — Postlar ro'yxati va yangi post qo'shish."""
 
     queryset = Post.objects.all()
     serializer_class = PostAdminSerializer
