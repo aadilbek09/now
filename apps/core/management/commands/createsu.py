@@ -11,11 +11,12 @@ class Command(BaseCommand):
         password = "1234"
         user, created = User.objects.get_or_create(
             username=username,
-            defaults={"email": "admin@example.com", "is_superuser": True, "is_staff": True},
+            defaults={"email": "admin@example.com", "is_superuser": True, "is_staff": True, "role": User.Role.ADMIN},
         )
         user.set_password(password)
         user.is_superuser = True
         user.is_staff = True
+        user.role = User.Role.ADMIN
         user.email = "admin@example.com"
         user.save()
         if created:
