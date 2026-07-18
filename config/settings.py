@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
-    'drf_yasg',
     'drf_spectacular',
 
     # local apps (1-a'zodan 6-a'zogacha bo'lgan modullar)
@@ -237,7 +236,7 @@ JAZZMIN_SETTINGS = {
     "user_avatar": None,
 
     "topmenu_links": [
-        {"name": "Sayt (Swagger API)", "url": "/docs/", "new_window": True},
+        {"name": "Sayt (Swagger API)", "url": "/api/docs/", "new_window": True},
         {"model": "accounts.User"},
     ],
 

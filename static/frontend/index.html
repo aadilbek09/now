@@ -13,18 +13,18 @@
 
   <!-- ===== HEADER ===== -->
   <header class="header">
-    <a href="index.html" class="header__logo">
+    <a href="/" class="header__logo">
       
       Restaran
     </a>
     <nav class="header__nav" id="headerNav">
-      <a href="menu.html">Menyu</a>
-      <a href="news.html">Janaliqlar</a>
-      <a href="about.html">Biz haqimizda</a>
-          <a href="contact.html">Biz benen bag'laniw</a>
-          <a href="profile.html">Profilim</a>
+      <a href="/menu/">Menyu</a>
+      <a href="/news/">Janaliqlar</a>
+      <a href="/about/">Biz haqimizda</a>
+          <a href="/contact/">Biz benen bag'laniw</a>
+          <a href="/profile/">Profilim</a>
         </nav>
-        <a href="login.html" class="header__login" id="headerLogin">Kiriw</a>
+        <a href="/login/" class="header__login" id="headerLogin">Kiriw</a>
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -442,7 +442,7 @@
             '<div class="news-card__body">' +
               '<p class="news-card__title">' + escapeHtml(n.title) + '</p>' +
               '<p class="news-card__desc">' + escapeHtml(n.desc || '') + '</p>' +
-              '<div class="news-card__footer"><a href="news.html" class="news-card__link">Batafsil</a><span class="news-card__date">' + formatDate(n.created_at) + '</span></div>' +
+              '<div class="news-card__footer"><a href="/news/" class="news-card__link">Batafsil</a><span class="news-card__date">' + formatDate(n.created_at) + '</span></div>' +
             '</div>' +
           '</div>';
         }).join('');
