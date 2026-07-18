@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <base href="/static/frontend/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kiriw — Restaran</title>
+  <link rel="stylesheet" href="globals.css" />
+  <style>
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-bg-light);
+      padding: 20px;
+    }
+    .login-card {
+      background: var(--color-white);
+      border-radius: 20px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    .login-card__logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--color-primary);
+      margin-bottom: 8px;
+    }
+    .login-card__sub {
+      font-size: 14px;
+      color: var(--color-text-gray);
+      margin-bottom: 32px;
+    }
+    .login-card .form-group {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+    .login-card .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-dark);
+      margin-bottom: 6px;
+    }
+    .login-card .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--color-border);
+      border-radius: 10px;
+      font-family: var(--font-family);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.3s;
+      box-sizing: border-box;
+    }
+    .login-card .form-group input:focus {
+      border-color: var(--color-primary);
+    }
+    .login-card__btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--color-primary);
+      color: var(--color-white);
+      border: none;
+      border-radius: 10px;
+      font-family: var(--font-family);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 8px;
+    }
+    .login-card__btn:hover {
+      background: var(--color-primary-dark);
+    }
+    .login-card__error {
+      color: var(--color-primary);
+      font-size: 13px;
+      margin-top: 16px;
+      display: none;
+    }
+    .login-card__error--visible {
+      display: block;
+    }
+    .login-card__link {
+      display: inline-block;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--color-text-gray);
+      transition: color 0.3s;
+      text-decoration: none;
+    }
+    .login-card__link:hover {
+      color: var(--color-text-dark);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-page">
+    <div class="login-card">
+      <div class="login-card__logo">Restaran</div>
+      <p class="login-card__sub">AKuntinizga kiriw</p>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="Username" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Parol</label>
+          <input type="password" id="password" placeholder="Parol" required />
+        </div>
+        <button type="submit" class="login-card__btn">Kiriw</button>
+        <p class="login-card__error" id="loginError">Username yaki parol qatelik</p>
+      </form>
+
+      <a href="register.html" class="login-card__link">Dizimnen otiw &rarr;</a>
+      <br/>
+      <a href="index.html" class="login-card__link" style="margin-top:8px;">&larr; Bas panelge qaytiw</a>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script>
+    (function () {
+      var currentUser = getUser();
+      if (currentUser) {
+        if (currentUser.role === 'admin') {
+          window.location.href = 'admin-panel.html';
+        } else {
+          window.location.href = 'index.html';
+        }
+      }
+    })();
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      var username = document.getElementById('username').value;
+      var password = document.getElementById('password').value;
+      var errorEl = document.getElementById('loginError');
+      errorEl.classList.remove('login-card__error--visible');
+
+      try {
+        var data = await apiPost('/accounts/auth/login', { username: username, password: password });
+        setTokens(data.access, data.refresh);
+        setUser(data.user);
+        if (data.user && data.user.role === 'admin') {
+          window.location.href = 'admin-panel.html';
+        } else {
+          window.location.href = 'index.html';
+        }
+      } catch (err) {
+        if (err && err.json) {
+          err.json().then(function(errData) {
+            errorEl.textContent = errData.detail || JSON.stringify(errData);
+            errorEl.classList.add('login-card__error--visible');
+          }).catch(function() {
+            errorEl.textContent = 'Username yoki parol noto\'g\'ri';
+            errorEl.classList.add('login-card__error--visible');
+          });
+        } else {
+          errorEl.textContent = err.message || 'Username yaki parol qa\'t\'e';
+          errorEl.classList.add('login-card__error--visible');
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
+

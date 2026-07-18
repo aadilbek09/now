@@ -1,0 +1,433 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <base href="/static/frontend/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menyu — Restaran</title>
+  <link rel="stylesheet" href="globals.css" />
+  <link rel="stylesheet" href="menu.css" />
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="header__logo">Restaran</a>
+    <nav class="header__nav" id="headerNav">
+      <a href="menu.html">Menyu</a>
+      <a href="news.html">Janaliqlar</a>
+      <a href="about.html">Biz haqimizda</a>
+      <a href="contact.html">Biz benen bag'laniw</a>
+    </nav>
+    <a href="login.html" class="header__login">Kiriw</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="breadcrumb"><a href="index.html">Bas sahifa</a> | <span>Menyu</span></div>
+
+  <section class="menu-page">
+    <div class="container">
+      <div class="sidebar-wrap">
+        <aside class="menu-sidebar">
+          <h3 class="menu-sidebar__title">Daimiy<br />menyu</h3>
+          <div class="menu-sidebar__filters" id="categoryFilters">
+          </div>
+        </aside>
+
+      </div>
+
+      <div class="menu-grid" id="menuGrid">
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRODUCT DETAIL MODAL ===== -->
+  <div class="product-overlay" id="productModal">
+    <div class="product-modal-inner">
+      <button class="product-modal-close" id="productModalClose">&times;</button>
+      <div class="product-modal-body">
+        <div class="product-modal-img">
+          <img id="productModalImg" src="" alt="" />
+        </div>
+        <div class="product-modal-content">
+          <p class="product-modal-cat" id="productModalCategory"></p>
+          <h2 class="product-modal-name" id="productModalName"></h2>
+          <p class="product-modal-desc" id="productModalDesc"></p>
+          <span class="product-modal-price" id="productModalPrice"></span>
+          <button class="product-modal-order" id="productModalOrder">Buyurtpa beriw</button>
+          <p style="font-size:12px;color:var(--color-text-gray);margin-top:8px;text-align:center;">&#128222; +998912555309 / +998933350805</p>
+
+          <div class="product-modal-divider"></div>
+
+          <div class="product-actions">
+            <button class="product-like" id="productLikeBtn">&#128077; <span id="productLikeCount">0</span></button>
+            <button class="product-dislike" id="productDislikeBtn">&#128078; <span id="productDislikeCount">0</span></button>
+          </div>
+
+          <div class="product-stars" id="productStars">
+            <span class="star" data-value="1">&#9734;</span>
+            <span class="star" data-value="2">&#9734;</span>
+            <span class="star" data-value="3">&#9734;</span>
+            <span class="star" data-value="4">&#9734;</span>
+            <span class="star" data-value="5">&#9734;</span>
+          </div>
+          <p class="product-stars-label" id="productStarsLabel">Baha beriw</p>
+
+          <textarea class="product-comment-input" id="productCommentInput" placeholder="Izoh qoldirish..." rows="3"></textarea>
+          <button class="product-comment-btn" id="productCommentBtn">pikir qaldiriw</button>
+          <div class="product-comments" id="productComments"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="newsletter">
+    <div class="container">
+      <p class="newsletter__label">Janaliqlar pochta arqali</p>
+      <h2 class="newsletter__title">Janaliqlarga obuna bo'ling</h2>
+      <p class="newsletter__text">En songi janaliqlardi o'tkezip jibermen!</p>
+      <form class="newsletter__form" id="newsletterForm">
+        <input class="newsletter__input" id="newsletterEmail" type="email" placeholder="Email" required />
+        <button class="newsletter__btn" type="submit">Obuna bo'lish</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__col" id="footerContact">
+        <h4>Biz benen bag'laniw</h4>
+        <p>9 W 53rd St, London,<br />NY 10019, UK</p>
+        <p style="margin-top:12px;">+998912555309</p>
+        <p>+998933350805</p>
+      </div>
+      <div class="footer__col footer__center">
+        <div class="footer__logo-text" id="footerLogoText">Restaran</div>
+        <p class="footer__quote" id="footerQuote">&ldquo;The best way to find yourself is to lose yourself in the service of others.&rdquo;</p>
+        <div class="footer__social" id="footerSocial">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Twitter">&#120143;</a>
+          <a href="#" aria-label="Instagram">&#120143;</a>
+        </div>
+      </div>
+      <div class="footer__col" id="footerHours">
+        <h4>Islew waqti</h4>
+        <p>Dushanba-Juma:<br />08:00 &ndash; 00:00</p>
+        <p style="margin-top:12px;">Shanba-Yakshanba:<br />07:00 &ndash; 23:00</p>
+      </div>
+    </div>
+    <hr class="footer__divider" />
+    <p class="footer__bottom">2022 Pop online. Barcha huquqlar himoyalangan.</p>
+  </footer>
+
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal__close" id="modalClose">&times;</button>
+      <p class="modal__title">Restaran</p>
+      <p class="modal__sub">Qosh kelibsiz! Iltimas, tizimge kirin.</p>
+      <form class="modal__form">
+        <input type="email" placeholder="Email" required />
+        <input type="password" placeholder="Parol" required />
+        <button class="modal__submit" type="submit">Kiriw</button>
+      </form>
+      <p class="modal__forgot">Akuantiniz joqpa? <a href="#">Dizimnen otiw</a></p>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script>
+    (function() {
+      var ham = document.getElementById('hamburger');
+      var nav = document.getElementById('headerNav');
+      var backdrop = document.createElement('div');
+      backdrop.className = 'nav-backdrop';
+      document.body.appendChild(backdrop);
+
+      function toggle() {
+        var isOpen = nav.classList.toggle('open');
+        ham.classList.toggle('open');
+        backdrop.classList.toggle('show', isOpen);
+        document.body.classList.toggle('nav-open', isOpen);
+      }
+
+      ham.addEventListener('click', toggle);
+      backdrop.addEventListener('click', toggle);
+    })();
+
+    var loginBtn = document.querySelector('.header__login');
+    var modalOverlay = document.getElementById('loginModal');
+    var modalClose = document.getElementById('modalClose');
+
+    if (loginBtn && modalOverlay) {
+      loginBtn.addEventListener('click', function() { modalOverlay.classList.add('open'); });
+      modalClose.addEventListener('click', function() { modalOverlay.classList.remove('open'); });
+      modalOverlay.addEventListener('click', function(e) { if (e.target === modalOverlay) modalOverlay.classList.remove('open'); });
+    }
+
+    /* ===== CATEGORIES & PRODUCTS ===== */
+    var allCategories = [];
+    var currentCategoryId = null;
+
+    function renderCategories(categories) {
+      var container = document.getElementById('categoryFilters');
+      container.innerHTML = '';
+      var allBtn = document.createElement('button');
+      allBtn.className = 'menu-sidebar__btn menu-sidebar__btn--active';
+      allBtn.textContent = 'Barchasi';
+      allBtn.setAttribute('data-id', '');
+      container.appendChild(allBtn);
+      categories.forEach(function(cat) {
+        var btn = document.createElement('button');
+        btn.className = 'menu-sidebar__btn';
+        btn.textContent = cat.name;
+        btn.setAttribute('data-id', cat.id);
+        container.appendChild(btn);
+      });
+      container.querySelectorAll('.menu-sidebar__btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          container.querySelectorAll('.menu-sidebar__btn').forEach(function(b) { b.classList.remove('menu-sidebar__btn--active'); });
+          this.classList.add('menu-sidebar__btn--active');
+          var catId = this.getAttribute('data-id');
+          if (catId) {
+            currentCategoryId = parseInt(catId);
+          } else {
+            currentCategoryId = null;
+          }
+          loadProducts(currentCategoryId);
+        });
+      });
+    }
+
+    function renderProducts(products) {
+      var grid = document.getElementById('menuGrid');
+      grid.innerHTML = '';
+      if (!products || products.length === 0) {
+        grid.innerHTML = '<p style="text-align:center;color:#999;grid-column:1/-1;padding:40px 0;">Mahsulotlar topilmadi.</p>';
+        return;
+      }
+      products.forEach(function(p) {
+        var imgUrl = p.image_big || p.image || '';
+        var div = document.createElement('div');
+        div.className = 'menu-item';
+        div.setAttribute('onclick', 'openProduct(this)');
+        div.setAttribute('data-id', p.id);
+        div.setAttribute('data-category', p.category_name || '');
+        div.setAttribute('data-name', p.name);
+        div.setAttribute('data-price', p.price + ' so\'m');
+        div.setAttribute('data-description', p.description || 'Ta\'rif mavjud emas.');
+        div.setAttribute('data-img', imgUrl);
+        div.innerHTML =
+          '<div class="menu-item__img-wrap"><img src="' + (imgUrl) + '" alt="' + (p.name || '') + '" loading="lazy" /></div>' +
+          '<p class="menu-item__name">' + (p.name || '') + '</p>' +
+          '<span class="menu-item__price">' + p.price + ' so\'m</span>';
+        grid.appendChild(div);
+      });
+    }
+
+    function loadProducts(categoryId) {
+      var url = '/menu/products';
+      if (categoryId) url += '?category_id=' + categoryId;
+      apiGet(url).then(function(data) {
+        var products = (data && data.results) ? data.results : [];
+        renderProducts(products);
+      }).catch(function(err) {
+        console.error('Failed to load products:', err);
+        document.getElementById('menuGrid').innerHTML = '<p style="text-align:center;color:#e74c3c;grid-column:1/-1;padding:40px 0;">Menyuni yuklashda xatolik. Iltimos, keyinroq qayta urinib ko\'ring.</p>';
+      });
+    }
+
+    /* ===== NEWSLETTER ===== */
+    var nlForm = document.getElementById('newsletterForm');
+    if (nlForm) {
+      nlForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var email = document.getElementById('newsletterEmail').value.trim();
+        if (!email) return;
+        apiPost('/contact/newsletter/subscribe', { email: email }).then(function() {
+          alert('Obuna bo\'lganiz ushin rahmet!');
+          document.getElementById('newsletterEmail').value = '';
+        }).catch(function(err) {
+          console.error('Newsletter subscribe failed:', err);
+          alert('Obuna bo\'lishda qatelik. Iltimas, keyinlew qayta urinip ko\'rin.');
+        });
+      });
+    }
+
+    /* ===== LOAD RESTAURANT INFO ===== */
+    function loadRestaurantInfo() {
+      apiGet('/core/restaurant-info/').then(function(info) {
+        if (!info) return;
+        if (info.name) {
+          document.getElementById('footerLogoText').textContent = info.name;
+          document.title = 'Menyu — ' + info.name;
+        }
+        if (info.address) {
+          document.getElementById('footerContact').innerHTML = '<h4>Biz benen bag\'laniw</h4><p>' + info.address + '</p>' +
+            (info.phone ? '<p style="margin-top:12px;">' + info.phone + '</p>' : '');
+        }
+        if (info.working_hours) {
+          document.getElementById('footerHours').innerHTML = '<h4>Jumis waqti</h4><p>' + info.working_hours + '</p>';
+        }
+        if (info.quote) {
+          document.getElementById('footerQuote').textContent = '\u201c' + info.quote + '\u201d';
+        }
+        if (info.facebook_url || info.instagram_url) {
+          var socialHtml = '';
+          if (info.facebook_url) socialHtml += '<a href="' + info.facebook_url + '" aria-label="Facebook">f</a>';
+          if (info.instagram_url) socialHtml += '<a href="' + info.instagram_url + '" aria-label="Instagram">&#120143;</a>';
+          document.getElementById('footerSocial').innerHTML = socialHtml;
+        }
+      }).catch(function(err) {
+        console.error('Failed to load restaurant info:', err);
+      });
+    }
+
+    /* ===== INIT ===== */
+    apiGet('/menu/categories').then(function(cats) {
+      allCategories = cats || [];
+      renderCategories(allCategories);
+      return loadProducts(null);
+    }).catch(function(err) {
+      console.error('Failed to load categories:', err);
+    });
+    loadRestaurantInfo();
+
+    /* ===== PRODUCT DETAIL MODAL ===== */
+    var currentProductId = null;
+
+    function openProduct(item) {
+      var modal = document.getElementById('productModal');
+      if (!modal) return;
+
+      var imgEl = document.getElementById('productModalImg');
+      var catEl = document.getElementById('productModalCategory');
+      var nameEl = document.getElementById('productModalName');
+      var descEl = document.getElementById('productModalDesc');
+      var priceEl = document.getElementById('productModalPrice');
+      var orderBtn = document.getElementById('productModalOrder');
+
+      var name = item.getAttribute('data-name') || '';
+      var price = item.getAttribute('data-price') || '';
+      var category = item.getAttribute('data-category') || '';
+      var desc = item.getAttribute('data-description') || 'Ta\'rif mavjud emas.';
+      var img = item.getAttribute('data-img') || '';
+      var id = item.getAttribute('data-id') || '';
+
+      currentProductId = id;
+
+      imgEl.src = img;
+      imgEl.alt = name;
+      catEl.textContent = category;
+      nameEl.textContent = name;
+      descEl.textContent = desc;
+      priceEl.textContent = price;
+
+      orderBtn.onclick = function() {
+        var msg = 'Salem! Men buyurtpa berejaqpan:\n\n' + name + ' - ' + price + '\n\nKategoriya: ' + category + '\n\nTelefon: +998912555309 yoki +998933350805';
+        window.open('https://wa.me/998912555309?text=' + encodeURIComponent(msg), '_blank');
+      };
+
+      document.getElementById('productLikeCount').textContent = '0';
+      document.getElementById('productDislikeCount').textContent = '0';
+      document.getElementById('productLikeBtn').className = 'product-like';
+      document.getElementById('productDislikeBtn').className = 'product-dislike';
+
+      var stars = document.querySelectorAll('.star');
+      stars.forEach(function(s) { s.className = 'star'; });
+      document.getElementById('productStarsLabel').textContent = 'Baha beriw';
+
+      document.getElementById('productCommentInput').value = '';
+      var commentsEl = document.getElementById('productComments');
+      commentsEl.innerHTML = '<p style="color:#999;font-size:13px;">Pikirler juklenbekte...</p>';
+
+      if (id) {
+        apiGet('/menu/products/' + id + '/comments').then(function(comments) {
+          commentsEl.innerHTML = '';
+          if (!comments || comments.length === 0) {
+            commentsEl.innerHTML = '<p style="color:#999;font-size:13px;">Hali izohlar yo\'q.</p>';
+            return;
+          }
+          comments.forEach(function(c) {
+            var div = document.createElement('div');
+            div.className = 'product-comment-item';
+            div.textContent = c.text || '';
+            var dateSpan = document.createElement('span');
+            dateSpan.style.display = 'block';
+            dateSpan.style.fontSize = '11px';
+            dateSpan.style.color = '#aaa';
+            dateSpan.style.marginTop = '4px';
+            dateSpan.textContent = c.created_at ? new Date(c.created_at).toLocaleDateString() : '';
+            div.appendChild(dateSpan);
+            commentsEl.appendChild(div);
+          });
+        }).catch(function() {
+          commentsEl.innerHTML = '<p style="color:#e74c3c;font-size:13px;">Izohlarni yuklashda xatolik.</p>';
+        });
+      } else {
+        commentsEl.innerHTML = '<p style="color:#999;font-size:13px;">Hali izohlar yo\'q.</p>';
+      }
+
+      modal.classList.add('open');
+    }
+
+    (function() {
+      var modal = document.getElementById('productModal');
+      var closeBtn = document.getElementById('productModalClose');
+
+      if (closeBtn) closeBtn.addEventListener('click', function() { modal.classList.remove('open'); });
+      if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('open'); });
+
+      var stars = document.querySelectorAll('.star');
+      stars.forEach(function(star) {
+        star.addEventListener('click', function() {
+          var val = parseInt(this.getAttribute('data-value'));
+          stars.forEach(function(s) { s.className = 'star' + (parseInt(s.getAttribute('data-value')) <= val ? ' active' : ''); });
+          document.getElementById('productStarsLabel').textContent = 'Siz ' + val + ' yulduz berdingiz';
+        });
+        star.addEventListener('mouseenter', function() {
+          var val = parseInt(this.getAttribute('data-value'));
+          stars.forEach(function(s) { if (parseInt(s.getAttribute('data-value')) <= val) s.classList.add('hovered'); });
+        });
+        star.addEventListener('mouseleave', function() {
+          stars.forEach(function(s) { s.classList.remove('hovered'); });
+        });
+      });
+
+      var commentBtn = document.getElementById('productCommentBtn');
+      var commentInput = document.getElementById('productCommentInput');
+
+      commentBtn.addEventListener('click', function() {
+        var text = commentInput.value.trim();
+        if (!text || !currentProductId) return;
+        apiPost('/menu/products/' + currentProductId + '/comments', { text: text }).then(function(newComment) {
+          var commentsEl = document.getElementById('productComments');
+          var noMsg = commentsEl.querySelector('p');
+          if (noMsg && noMsg.textContent.indexOf('Hali izohlar') !== -1) commentsEl.innerHTML = '';
+          var div = document.createElement('div');
+          div.className = 'product-comment-item';
+          div.textContent = newComment.text || text;
+          var dateSpan = document.createElement('span');
+          dateSpan.style.display = 'block';
+          dateSpan.style.fontSize = '11px';
+          dateSpan.style.color = '#aaa';
+          dateSpan.style.marginTop = '4px';
+          dateSpan.textContent = 'Hozirgina';
+          div.appendChild(dateSpan);
+          commentsEl.appendChild(div);
+          commentInput.value = '';
+        }).catch(function(err) {
+          console.error('Failed to post comment:', err);
+          alert('Izoh yuborishda xatolik. Iltimos, qayta urinib ko\'ring.');
+        });
+      });
+
+      commentInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commentBtn.click(); }
+      });
+    })();
+  </script>
+
+</body>
+</html>
+

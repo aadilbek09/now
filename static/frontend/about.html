@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html lang="kaa">
+<head>
+  <meta charset="UTF-8" />
+  <base href="/static/frontend/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biz haqqımızda — Restaran</title>
+  <link rel="stylesheet" href="globals.css" />
+  <link rel="stylesheet" href="about.css" />
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="header__logo">Restaran</a>
+    <nav class="header__nav" id="headerNav">
+      <a href="menu.html">Menyu</a>
+      <a href="news.html">Jańalıqlar</a>
+      <a href="about.html">Biz haqqımızda</a>
+      <a href="contact.html">Biz benen baylanıs</a>
+    </nav>
+    <a href="login.html" class="header__login">Kiriw</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <section class="about-hero" style="padding:80px 20px 0;text-align:center;">
+    <h1 class="page-title">Biz haqqımızda</h1>
+    <div class="page-title__divider">
+      <span class="page-title__divider-line"></span>
+      <span class="page-title__divider-dot"></span>
+      <span class="page-title__divider-line"></span>
+    </div>
+  </section>
+
+  <section class="about-content">
+    <div class="container">
+<p>Restoranımız óziniń qaytalanbas dámine iye bolǵan taǵamları menen tanımalı. Biz miymanlarımızǵa tek ǵana mazelı awqatlar emes, bálki jaǵımlı atmosfera hám joqarı dárejeli xızmetti usınamız.</p>
+      <p>Bizdiń aspazlarımız eń taza ónimlerden paydalanıp, milliy hám evropalıq asxana shedevrlerin jaratadı. Sizlerdi jaqınlarıńız benen birge restoranımızda kútip qalamız.</p>
+      <div class="about-content__image">
+        <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=600&q=80" alt="Restaran Restaurant" loading="lazy" />
+        <div class="about-content__image-overlay">
+          <div class="about-content__image-title">Restaran</div>
+          <div class="about-content__image-sub">SHASHLIKLER - LAHMACUN - SALATLAR - VEGAN0</div>
+        </div>
+      </div>
+
+      <p>Bizdiń restoranımız óziniń qaytalanbas dámine iye bolǵan taǵamları menen tanımalı. Biz miymanlarımızǵa tek ǵana mazelı awqatlar emes, bálki jaǵımlı atmosfera hám joqarı dárejeli xızmetti usınamız. Biz bul jerde hár bir miymannıń ózin jaqsı seziniwin qáleymiz.</p>
+      <p>Bizdiń aspazlarımız eń taza ónimlerden paydalanıp, milliy hám evropalıq asxana shedevrlerin jaratadı. Sizlerdi jaqınlarıńız benen birge restoranımızda kútip qalamız. Biz kórsetetuǵın xızmetler hár qashan miymanlar talabına juwap beredi.</p>
+    </div>
+  </section>
+
+  <section class="newsletter">
+    <div class="container">
+      <p class="newsletter__label">Jańalıqlar pochta arqalı</p>
+      <h2 class="newsletter__title">Jańalıqlarǵa jazılıw</h2>
+      <p class="newsletter__text">Eń sońǵı jańalıqlardı qaltıratpań!</p>
+      <form class="newsletter__form">
+        <input class="newsletter__input" type="email" placeholder="Email" required />
+        <button class="newsletter__btn" type="submit">Jazılıw</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__col">
+        <h4>Biz benen baylanıs</h4>
+        <p>9 W 53rd St, London,<br />NY 10019, UK</p>
+        <p style="margin-top:12px;">+998912555309</p>
+        <p>+998933350805</p>
+      </div>
+      <div class="footer__col footer__center">
+        <div class="footer__logo-text">Restaran</div>
+        <p class="footer__quote">&ldquo;Ózińdi tabıwdıń eń jaqsı jolı — basqalarǵa xızmet etiwde ózińdi unıtıw.&rdquo;</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Twitter">&#120143;</a>
+          <a href="#" aria-label="Instagram">&#120143;</a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h4>Is waqtı</h4>
+        <p>Dúyshembi-Juma:<br />08:00 &ndash; 00:00</p>
+        <p style="margin-top:12px;">Shembi-Ekshembi:<br />07:00 &ndash; 23:00</p>
+      </div>
+    </div>
+    <hr class="footer__divider" />
+    <p class="footer__bottom">2022 Pop online. Barlıq huqıqlar qorǵalǵan.</p>
+  </footer>
+
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal__close" id="modalClose">&times;</button>
+      <p class="modal__title">Restaran</p>
+      <p class="modal__sub">Xosh keldińiz! Iltimas, sistemaga kiriń.</p>
+      <form class="modal__form">
+        <input type="email" placeholder="Email" required />
+        <input type="password" placeholder="Parol" required />
+        <button class="modal__submit" type="submit">Kiriw</button>
+      </form>
+      <p class="modal__forgot">Esabıńız joq pa? <a href="#">Dizimnen ótiw</a></p>
+    </div>
+  </div>
+
+<script src="api.js"></script>
+  <script>
+    (function() {
+      var ham = document.getElementById('hamburger');
+      var nav = document.getElementById('headerNav');
+      var backdrop = document.createElement('div');
+      backdrop.className = 'nav-backdrop';
+      document.body.appendChild(backdrop);
+
+      function toggle() {
+        var isOpen = nav.classList.toggle('open');
+        ham.classList.toggle('open');
+        backdrop.classList.toggle('show', isOpen);
+        document.body.classList.toggle('nav-open', isOpen);
+      }
+
+      ham.addEventListener('click', toggle);
+      backdrop.addEventListener('click', toggle);
+    })();
+
+    var loginBtn = document.querySelector('.header__login');
+    var modalOverlay = document.getElementById('loginModal');
+    var modalClose = document.getElementById('modalClose');
+
+    if (loginBtn && modalOverlay) {
+      loginBtn.addEventListener('click', function() { modalOverlay.classList.add('open'); });
+      modalClose.addEventListener('click', function() { modalOverlay.classList.remove('open'); });
+      modalOverlay.addEventListener('click', function(e) { if (e.target === modalOverlay) modalOverlay.classList.remove('open'); });
+    }
+
+    // Newsletter subscription
+    (function() {
+      var form = document.querySelector('.newsletter__form');
+      if (!form) return;
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var emailInput = form.querySelector('.newsletter__input');
+        var email = emailInput.value.trim();
+        if (!email) return;
+        var btn = form.querySelector('.newsletter__btn');
+        btn.disabled = true;
+        btn.textContent = 'Jazılıw...';
+        apiPost('/contact/newsletter/subscribe', { email: email })
+          .then(function() {
+            btn.textContent = 'Jazıldı!';
+            emailInput.value = '';
+            setTimeout(function() { btn.textContent = 'Jazılıw'; btn.disabled = false; }, 2000);
+          })
+          .catch(function() {
+            btn.textContent = 'Jazılıw';
+            btn.disabled = false;
+            alert('Jazılıwda qátelik júz berdi. Iltimas, qaytadan urınıp kóriń.');
+          });
+      });
+    })();
+
+    // Load restaurant info from API
+    (function() {
+      apiGet('/core/restaurant-info/')
+        .then(function(info) {
+          if (!info) return;
+
+          // Contact Us column
+          var contactCol = document.querySelector('.footer__col');
+          if (contactCol) {
+            var paragraphs = contactCol.querySelectorAll('p');
+            if (paragraphs[0] && info.address) {
+              paragraphs[0].innerHTML = info.address.replace(/\n/g, '<br />');
+            }
+            if (paragraphs[1] && info.phone) {
+              var phones = info.phone.split(',').map(function(p) { return p.trim(); });
+              paragraphs[1].textContent = phones[0] || '';
+              if (paragraphs[2] && phones[1]) {
+                paragraphs[2].textContent = phones[1];
+              } else if (paragraphs[2]) {
+                paragraphs[2].textContent = '';
+              }
+            }
+          }
+
+          // Working Hours column
+          var cols = document.querySelectorAll('.footer__col');
+          var hoursCol = cols[2];
+          if (hoursCol && info.working_hours) {
+            var hoursParagraphs = hoursCol.querySelectorAll('p');
+            var lines = info.working_hours.split('\n');
+            if (hoursParagraphs[0] && lines[0]) {
+              hoursParagraphs[0].innerHTML = lines[0].replace(/:/g, ':<br />');
+            }
+            if (hoursParagraphs[1] && lines[1]) {
+              hoursParagraphs[1].innerHTML = lines[1].replace(/:/g, ':<br />');
+            }
+          }
+
+          // Social links
+          var socialLinks = document.querySelectorAll('.footer__social a');
+          if (socialLinks[0] && info.facebook_url) socialLinks[0].href = info.facebook_url;
+          if (socialLinks[2] && info.instagram_url) socialLinks[2].href = info.instagram_url;
+          if (socialLinks[2] && info.map_url) socialLinks[2].setAttribute('data-map', info.map_url);
+        })
+        .catch(function() {});
+    })();
+  </script>
+  
+</body>
+</html>
+

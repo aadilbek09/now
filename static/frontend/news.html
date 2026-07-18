@@ -1,0 +1,402 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <base href="/static/frontend/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Janaliqlar — Restaran</title>
+  <link rel="stylesheet" href="globals.css" />
+  <link rel="stylesheet" href="news.css" />
+  <link rel="stylesheet" href="menu.css" />
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="header__logo">Restaran</a>
+    <nav class="header__nav" id="headerNav">
+      <a href="menu.html">Menyu</a>
+      <a href="news.html">Janaliqlar</a>
+      <a href="about.html">Biz haqimizda</a>
+      <a href="contact.html">Biz benen bag'laniw</a>
+    </nav>
+    <a href="login.html" class="header__login">Kiriw</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="breadcrumb"><a href="index.html">Bos sahifa</a> | <span>Janaliqlar</span></div>
+
+  <section class="about-hero" style="padding:60px 20px 40px;text-align:center;">
+    <h1 class="page-title">Janaliqlar</h1>
+    <div class="page-title__divider">
+      <span class="page-title__divider-line"></span>
+      <span class="page-title__divider-dot"></span>
+      <span class="page-title__divider-line"></span>
+    </div>
+  </section>
+
+  <section class="news-page">
+    <div class="container">
+      <div class="news-page__grid" id="newsGrid"></div>
+      <button class="news-page__btn">Ko'plew</button>
+    </div>
+  </section>
+
+  <!-- ===== PRODUCT DETAIL MODAL ===== -->
+  <div class="product-overlay" id="productModal">
+    <div class="product-modal-inner">
+      <button class="product-modal-close" id="productModalClose">&times;</button>
+      <div class="product-modal-body">
+        <div class="product-modal-img">
+          <img id="productModalImg" src="" alt="" />
+        </div>
+        <div class="product-modal-content">
+          <p class="product-modal-cat" id="productModalCategory"></p>
+          <h2 class="product-modal-name" id="productModalName"></h2>
+          <p class="product-modal-desc" id="productModalDesc"></p>
+          <span class="product-modal-price" id="productModalPrice"></span>
+          <button class="product-modal-order" id="productModalOrder">Buyurtpa beriw</button>
+          <p style="font-size:12px;color:var(--color-text-gray);margin-top:8px;text-align:center;">&#128222; +998912555309 / +998933350805</p>
+
+          <div class="product-modal-divider"></div>
+          <div class="product-actions">
+            <button class="product-like" id="productLikeBtn">&#128077; <span id="productLikeCount">0</span></button>
+            <button class="product-dislike" id="productDislikeBtn">&#128078; <span id="productDislikeCount">0</span></button>
+          </div>
+          <div class="product-stars" id="productStars">
+            <span class="star" data-value="1">&#9734;</span>
+            <span class="star" data-value="2">&#9734;</span>
+            <span class="star" data-value="3">&#9734;</span>
+            <span class="star" data-value="4">&#9734;</span>
+            <span class="star" data-value="5">&#9734;</span>
+          </div>
+          <p class="product-stars-label" id="productStarsLabel">Baha beriw</p>
+          <textarea class="product-comment-input" id="productCommentInput" placeholder="Izoh qoldirish..." rows="3"></textarea>
+          <button class="product-comment-btn" id="productCommentBtn">Pikir qaldiriw</button>
+          <div class="product-comments" id="productComments"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="newsletter">
+    <div class="container">
+      <p class="newsletter__label">Janaliqlar pochta arqali</p>
+      <h2 class="newsletter__title">Janaliqlarga obuna bo'lin</h2>
+      <p class="newsletter__text">En songi janaliqlardi otkezip jibermen!</p>
+      <form class="newsletter__form">
+        <input class="newsletter__input" type="email" placeholder="Email" required />
+        <button class="newsletter__btn" type="submit">Obuna bo'lish</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__col">
+        <h4>Biz benen bag'laniw</h4>
+        <p>9 W 53rd St, London,<br />NY 10019, UK</p>
+        <p style="margin-top:12px;">+998912555309</p>
+        <p>+998933350805</p>
+      </div>
+      <div class="footer__col footer__center">
+        <div class="footer__logo-text">Restaran</div>
+        <p class="footer__quote">&ldquo;The best way to find yourself is to lose yourself in the service of others.&rdquo;</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Twitter">&#120143;</a>
+          <a href="#" aria-label="Instagram">&#120143;</a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h4>Jumis waqti</h4>
+        <p>Dushanba-Juma:<br />08:00 &ndash; 00:00</p>
+        <p style="margin-top:12px;">Shanba-Yakshanba:<br />07:00 &ndash; 23:00</p>
+      </div>
+    </div>
+    <hr class="footer__divider" />
+    <p class="footer__bottom">2022 Pop online. Barcha huquqlar himoyalangan.</p>
+  </footer>
+
+
+
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal__close" id="modalClose">&times;</button>
+      <p class="modal__title">Restaran</p>
+      <p class="modal__sub">QOsh kelibsiz! Iltimas, tizimge kirin.</p>
+      <form class="modal__form">
+        <input type="email" placeholder="Email" required />
+        <input type="password" placeholder="Parol" required />
+        <button class="modal__submit" type="submit">Kiriw</button>
+      </form>
+      <p class="modal__forgot">Akauntiniz joqpa? <a href="#">Dizimnen o'tiw</a></p>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script>
+    (function() {
+      var ham = document.getElementById('hamburger');
+      var nav = document.getElementById('headerNav');
+      var backdrop = document.createElement('div');
+      backdrop.className = 'nav-backdrop';
+      document.body.appendChild(backdrop);
+
+      function toggle() {
+        var isOpen = nav.classList.toggle('open');
+        ham.classList.toggle('open');
+        backdrop.classList.toggle('show', isOpen);
+        document.body.classList.toggle('nav-open', isOpen);
+      }
+
+      ham.addEventListener('click', toggle);
+      backdrop.addEventListener('click', toggle);
+    })();
+
+    var loginBtn = document.querySelector('.header__login');
+    var modalOverlay = document.getElementById('loginModal');
+    var modalClose = document.getElementById('modalClose');
+
+    if (loginBtn && modalOverlay) {
+      loginBtn.addEventListener('click', function() { modalOverlay.classList.add('open'); });
+      modalClose.addEventListener('click', function() { modalOverlay.classList.remove('open'); });
+      modalOverlay.addEventListener('click', function(e) { if (e.target === modalOverlay) modalOverlay.classList.remove('open'); });
+    }
+
+    /* ===== NEWS ===== */
+    var newsGrid = document.getElementById('newsGrid');
+    var viewMoreBtn = document.querySelector('.news-page__btn');
+    var nextUrl = null;
+    var allPosts = [];
+
+    function formatDate(iso) {
+      var d = new Date(iso);
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return d.getUTCDate() + ' ' + months[d.getUTCMonth()] + ' ' + d.getUTCFullYear();
+    }
+
+    function renderPosts(posts) {
+      posts.forEach(function(post) {
+        allPosts.push(post);
+        var card = document.createElement('div');
+        card.className = 'news-card';
+        card.innerHTML =
+          '<div class="news-card__img-wrap"><img src="' + (post.image || '') + '" alt="' + (post.title || '') + '" loading="lazy" /></div>' +
+          '<div class="news-card__body">' +
+            '<p class="news-card__title">' + (post.title || '') + '</p>' +
+            '<p class="news-card__desc">' + (post.desc || '') + '</p>' +
+            '<div class="news-card__footer">' +
+              '<a href="#" class="news-card__link" data-id="' + post.id + '">Batafsil</a>' +
+              '<span class="news-card__date">' + formatDate(post.created_at) + '</span>' +
+            '</div>' +
+          '</div>';
+        newsGrid.appendChild(card);
+      });
+    }
+
+    function loadPosts(url) {
+      apiGet(url).then(function(data) {
+        renderPosts(data.results || []);
+        nextUrl = data.next || null;
+        if (viewMoreBtn) {
+          viewMoreBtn.style.display = nextUrl ? '' : 'none';
+        }
+      }).catch(function(err) {
+        console.error('Failed to load posts:', err);
+      });
+    }
+
+    loadPosts('/news/posts');
+
+    if (viewMoreBtn) {
+      viewMoreBtn.addEventListener('click', function() {
+        if (nextUrl) loadPosts(nextUrl);
+      });
+    }
+
+    /* ===== NEWSLETTER ===== */
+    var nlForm = document.querySelector('.newsletter__form');
+    if (nlForm) {
+      nlForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var emailInput = nlForm.querySelector('.newsletter__input');
+        var email = emailInput.value.trim();
+        if (!email) return;
+        apiPost('/contact/newsletter/subscribe', { email: email }).then(function() {
+          emailInput.value = '';
+          alert('Obuna bo\'lindi!');
+        }).catch(function(err) {
+          console.error('Newsletter subscribe failed:', err);
+          alert('Obuna bo\'liwda qatelik. Iltimas, qayta urinip ko\'rin.');
+        });
+      });
+    }
+
+    /* ===== RESTAURANT INFO ===== */
+    apiGet('/core/restaurant-info/').then(function(info) {
+      if (info) {
+        if (info.address) {
+          var contactP = document.querySelector('.footer__col p');
+          if (contactP) contactP.innerHTML = info.address.replace(/\n/g, '<br />');
+        }
+        if (info.phone) {
+          var phonePs = document.querySelectorAll('.footer__col p');
+          phonePs.forEach(function(p) {
+            if (p.textContent.match(/^\+?\d{9,}/)) p.textContent = info.phone;
+          });
+        }
+        if (info.working_hours) {
+          var whPs = document.querySelectorAll('.footer__col:last-child p');
+          if (whPs.length) {
+            whPs[0].innerHTML = info.working_hours.replace(/\n/g, '<br />');
+          }
+        }
+        if (info.name) {
+          var logo = document.querySelector('.footer__logo-text');
+          if (logo) logo.textContent = info.name;
+          var headerLogo = document.querySelector('.header__logo');
+          if (headerLogo) headerLogo.textContent = info.name;
+        }
+      }
+    }).catch(function(err) {
+      console.error('Failed to load restaurant info:', err);
+    });
+
+    /* ===== PRODUCT DETAIL MODAL ===== */
+    var currentProductId = null;
+    var productData = {};
+
+    function openProduct(item) {
+      var modal = document.getElementById('productModal');
+      if (!modal) return;
+
+      var imgEl = document.getElementById('productModalImg');
+      var catEl = document.getElementById('productModalCategory');
+      var nameEl = document.getElementById('productModalName');
+      var descEl = document.getElementById('productModalDesc');
+      var priceEl = document.getElementById('productModalPrice');
+      var orderBtn = document.getElementById('productModalOrder');
+
+      var name = item.getAttribute('data-name') || item.querySelector('.news-card__title, .menu-item__name, .mp-card__name').textContent;
+      var price = item.getAttribute('data-price') || '';
+      var category = item.getAttribute('data-category') || '';
+      var desc = item.getAttribute('data-description') || 'Ta\'rif mavjud emas.';
+      var img = item.getAttribute('data-img') || item.querySelector('img').src;
+
+      currentProductId = name;
+      if (!productData[currentProductId]) {
+        productData[currentProductId] = { liked: false, disliked: false, likeCount: 0, dislikeCount: 0, rating: 0, comments: [] };
+      }
+
+      imgEl.src = img;
+      imgEl.alt = name;
+      catEl.textContent = category;
+      nameEl.textContent = name;
+      descEl.textContent = desc;
+      priceEl.textContent = price;
+
+      orderBtn.onclick = function() {
+        var msg = 'Salem! Men buyurtpa berjaqpan:\n\n' + name + ' - ' + price + '\n\nKategoriya: ' + category + '\n\nTelefon: +998912555309 yoki +998933350805';
+        window.open('https://wa.me/998912555309?text=' + encodeURIComponent(msg), '_blank');
+      };
+
+      var data = productData[currentProductId];
+      document.getElementById('productLikeBtn').className = 'product-like' + (data.liked ? ' active' : '');
+      document.getElementById('productDislikeBtn').className = 'product-dislike' + (data.disliked ? ' active' : '');
+      document.getElementById('productLikeCount').textContent = data.likeCount || 0;
+      document.getElementById('productDislikeCount').textContent = data.dislikeCount || 0;
+
+      var stars = document.querySelectorAll('.star');
+      stars.forEach(function(s) { s.className = 'star' + (parseInt(s.getAttribute('data-value')) <= data.rating ? ' active' : ''); });
+      document.getElementById('productStarsLabel').textContent = data.rating > 0 ? 'Siz ' + data.rating + ' juldiz berdiniz' : 'Baho berish';
+
+      document.getElementById('productCommentInput').value = '';
+      var commentsEl = document.getElementById('productComments');
+      commentsEl.innerHTML = '';
+      data.comments.forEach(function(c) {
+        var div = document.createElement('div');
+        div.className = 'product-comment-item';
+        div.textContent = c;
+        commentsEl.appendChild(div);
+      });
+
+      modal.classList.add('open');
+    }
+
+    (function() {
+      var modal = document.getElementById('productModal');
+      var closeBtn = document.getElementById('productModalClose');
+
+      if (closeBtn) closeBtn.addEventListener('click', function() { modal.classList.remove('open'); });
+      if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('open'); });
+
+      var likeBtn = document.getElementById('productLikeBtn');
+      var dislikeBtn = document.getElementById('productDislikeBtn');
+
+      likeBtn.addEventListener('click', function() {
+        var data = productData[currentProductId];
+        if (!data) return;
+        if (data.liked) { data.liked = false; data.likeCount = Math.max(0, (data.likeCount || 0) - 1); }
+        else { data.liked = true; data.likeCount = (data.likeCount || 0) + 1; if (data.disliked) { data.disliked = false; data.dislikeCount = Math.max(0, (data.dislikeCount || 0) - 1); } }
+        this.className = 'product-like' + (data.liked ? ' active' : '');
+        document.getElementById('productDislikeBtn').className = 'product-dislike' + (data.disliked ? ' active' : '');
+        document.getElementById('productLikeCount').textContent = data.likeCount || 0;
+        document.getElementById('productDislikeCount').textContent = data.dislikeCount || 0;
+      });
+
+      dislikeBtn.addEventListener('click', function() {
+        var data = productData[currentProductId];
+        if (!data) return;
+        if (data.disliked) { data.disliked = false; data.dislikeCount = Math.max(0, (data.dislikeCount || 0) - 1); }
+        else { data.disliked = true; data.dislikeCount = (data.dislikeCount || 0) + 1; if (data.liked) { data.liked = false; data.likeCount = Math.max(0, (data.likeCount || 0) - 1); } }
+        this.className = 'product-dislike' + (data.disliked ? ' active' : '');
+        document.getElementById('productLikeBtn').className = 'product-like' + (data.liked ? ' active' : '');
+        document.getElementById('productLikeCount').textContent = data.likeCount || 0;
+        document.getElementById('productDislikeCount').textContent = data.dislikeCount || 0;
+      });
+
+      var stars = document.querySelectorAll('.star');
+      stars.forEach(function(star) {
+        star.addEventListener('click', function() {
+          var data = productData[currentProductId];
+          if (!data) return;
+          data.rating = parseInt(this.getAttribute('data-value'));
+          stars.forEach(function(s) { s.className = 'star' + (parseInt(s.getAttribute('data-value')) <= data.rating ? ' active' : ''); });
+          document.getElementById('productStarsLabel').textContent = 'Siz ' + data.rating + ' juldiz berdiniz';
+        });
+        star.addEventListener('mouseenter', function() {
+          var val = parseInt(this.getAttribute('data-value'));
+          stars.forEach(function(s) { if (parseInt(s.getAttribute('data-value')) <= val) s.classList.add('hovered'); });
+        });
+        star.addEventListener('mouseleave', function() {
+          stars.forEach(function(s) { s.classList.remove('hovered'); });
+        });
+      });
+
+      var commentBtn = document.getElementById('productCommentBtn');
+      var commentInput = document.getElementById('productCommentInput');
+
+      commentBtn.addEventListener('click', function() {
+        var text = commentInput.value.trim();
+        if (!text || !currentProductId) return;
+        var data = productData[currentProductId];
+        if (!data) return;
+        data.comments.push(text);
+        var div = document.createElement('div');
+        div.className = 'product-comment-item';
+        div.textContent = text;
+        document.getElementById('productComments').appendChild(div);
+        commentInput.value = '';
+      });
+
+      commentInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commentBtn.click(); }
+      });
+    })();
+  </script>
+
+</body>
+</html>
+

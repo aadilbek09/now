@@ -1,0 +1,294 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <base href="/static/frontend/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biz bilan bog'lanish — Restaran</title>
+  <link rel="stylesheet" href="globals.css" />
+  <link rel="stylesheet" href="contact.css" />
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="header__logo">Restaran</a>
+    <nav class="header__nav" id="headerNav">
+      <a href="menu.html">Menyu</a>
+      <a href="news.html">Janaliqlar</a>
+      <a href="about.html">Biz haqimizda</a>
+      <a href="contact.html">Biz benen bag'laniw</a>
+    </nav>
+    <a href="login.html" class="header__login">Kiriw</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="breadcrumb"><a href="index.html">Bas sahifa</a> | <span>Biz benen bag'laniw</span></div>
+
+  <section class="about-hero" style="padding:60px 20px 40px;text-align:center;">
+    <h1 class="page-title">Biz benen bag'laniw</h1>
+    <div class="page-title__divider">
+      <span class="page-title__divider-line"></span>
+      <span class="page-title__divider-dot"></span>
+      <span class="page-title__divider-line"></span>
+    </div>
+  </section>
+
+  <section class="contact-page">
+    <div class="container">
+      <div class="contact-page__grid">
+        <div class="contact-info">
+          <div class="contact-info__card"><div class="contact-info__icon">&#128222;</div><div><p class="contact-info__label">Telefon</p><p class="contact-info__value">+998912555309</p><p class="contact-info__value">+998933350805</p></div></div>
+          <div class="contact-info__card"><div class="contact-info__icon">&#9993;</div><div><p class="contact-info__label">Email</p><p class="contact-info__value">eaturkish@gmail.com</p></div></div>
+          <div class="contact-info__card"><div class="contact-info__icon">&#120143;</div><div><p class="contact-info__label">Instagram</p><p class="contact-info__value">eaturkish</p></div></div>
+          <div class="contact-info__card"><div class="contact-info__icon">&#120143;</div><div><p class="contact-info__label">Twitter</p><p class="contact-info__value">eaturkish</p></div></div>
+          <div class="contact-info__card"><div class="contact-info__icon">f</div><div><p class="contact-info__label">Facebook</p><p class="contact-info__value">eaturkish</p></div></div>
+        </div>
+
+        <div class="contact-form">
+          <h3 class="contact-form__title">Xabar jiberiw</h3>
+          <p class="contact-form__desc">Eger sorawlarıńız bolsa, bizge SMS jiberiwlerińiz yamasa telefon arqalı baylanısıwlarıńız múmkin, sonday-aq, sociallıq tarmaqlar arqalı da biz benen baylanısıwǵa boladı.</p>
+          <form id="contactForm">
+            <div class="contact-form__row"><input type="text" id="contactName" placeholder="Atiniz" required /><input type="email" id="contactEmail" placeholder="Emailiniz" required /></div>
+            <div class="contact-form__row"><input type="tel" id="contactPhone" placeholder="Telefon nawmeriniz" /><input type="text" id="contactSubject" placeholder="Mavzu" /></div>
+            <textarea id="contactText" placeholder="SMS siniz"></textarea>
+            <button class="contact-form__btn" type="submit" id="contactSubmitBtn">Qaber jiberiw</button>
+          </form>
+          <div id="contactFormMessage" style="display:none;margin-top:12px;padding:10px;border-radius:6px;text-align:center;font-size:14px;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="map-section">
+    <div class="container">
+      <h2 class="map-section__title">Bizdi kartadan tawin</h2>
+      <div class="map-section__wrap">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3021.954842713659!2d-73.97712968459377!3d40.75897944238746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258ff5e8b0f9d%3A0x1f6c7e74a0b1e8f!2s9%20W%2053rd%20St%2C%20New%20York%2C%20NY%2010019!5e0!3m2!1sen!2sus!4v1" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Restaran location"></iframe>
+        <div class="map-section__pin"><div class="map-section__pin-pulse"><div class="map-section__pin-dot"></div></div></div>
+        <div class="map-section__zoom"><button class="map-section__zoom-btn" aria-label="Zoom in">+</button><button class="map-section__zoom-btn" aria-label="Zoom out">&minus;</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="newsletter">
+    <div class="container">
+      <p class="newsletter__label">Janliqlar pochta arqali</p>
+      <h2 class="newsletter__title">Janaliqlarga obuna bolin</h2>
+      <p class="newsletter__text">En songgi janaliqlardi o'tkezip jibermen!</p>
+      <form class="newsletter__form" id="newsletterForm">
+        <input class="newsletter__input" id="newsletterEmail" type="email" placeholder="Email" required />
+        <button class="newsletter__btn" type="submit" id="newsletterBtn">Obuna boliw</button>
+      </form>
+      <div id="newsletterMessage" style="display:none;margin-top:10px;padding:8px;border-radius:6px;text-align:center;font-size:14px;"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__col" id="footerContactCol">
+        <h4>Biz benen bag'laniw</h4>
+        <p id="footerAddress">9 W 53rd St, London,<br />NY 10019, UK</p>
+        <p id="footerPhones" style="margin-top:12px;"></p>
+      </div>
+      <div class="footer__col footer__center">
+        <div class="footer__logo-text">Restaran</div>
+        <p class="footer__quote">&ldquo;The best way to find yourself is to lose yourself in the service of others.&rdquo;</p>
+        <div class="footer__social" id="footerSocial">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">&#120143;</a>
+        </div>
+      </div>
+      <div class="footer__col" id="footerHoursCol">
+        <h4>Jumis waqti</h4>
+        <p id="footerWorkingHours">Juklenbekte...</p>
+      </div>
+    </div>
+    <hr class="footer__divider" />
+    <p class="footer__bottom">2022 Pop online. Barcha huquqlar himoyalangan.</p>
+  </footer>
+
+
+
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal__close" id="modalClose">&times;</button>
+      <p class="modal__title">Restaran</p>
+      <p class="modal__sub">Qosh kelibsiz! Iltimas, tizimge kirin.</p>
+      <form class="modal__form">
+        <input type="email" placeholder="Email" required />
+        <input type="password" placeholder="Parol" required />
+        <button class="modal__submit" type="submit">Kirish</button>
+      </form>
+      <p class="modal__forgot">Akauntiniz joqpa? <a href="#">Dizimnen otiw</a></p>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script>
+    (function() {
+      var ham = document.getElementById('hamburger');
+      var nav = document.getElementById('headerNav');
+      var backdrop = document.createElement('div');
+      backdrop.className = 'nav-backdrop';
+      document.body.appendChild(backdrop);
+
+      function toggle() {
+        var isOpen = nav.classList.toggle('open');
+        ham.classList.toggle('open');
+        backdrop.classList.toggle('show', isOpen);
+        document.body.classList.toggle('nav-open', isOpen);
+      }
+
+      ham.addEventListener('click', toggle);
+      backdrop.addEventListener('click', toggle);
+    })();
+
+    var loginBtn = document.querySelector('.header__login');
+    var modalOverlay = document.getElementById('loginModal');
+    var modalClose = document.getElementById('modalClose');
+
+    if (loginBtn && modalOverlay) {
+      loginBtn.addEventListener('click', function() { modalOverlay.classList.add('open'); });
+      modalClose.addEventListener('click', function() { modalOverlay.classList.remove('open'); });
+      modalOverlay.addEventListener('click', function(e) { if (e.target === modalOverlay) modalOverlay.classList.remove('open'); });
+    }
+
+    // --- Contact Form ---
+    var contactForm = document.getElementById('contactForm');
+    var contactMsg = document.getElementById('contactFormMessage');
+    var contactSubmitBtn = document.getElementById('contactSubmitBtn');
+
+    if (contactForm) {
+      contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var name = document.getElementById('contactName').value.trim();
+        var email = document.getElementById('contactEmail').value.trim();
+        var phone = document.getElementById('contactPhone').value.trim();
+        var subject = document.getElementById('contactSubject').value.trim();
+        var text = document.getElementById('contactText').value.trim();
+
+        if (!name || !email) {
+          contactMsg.style.display = 'block';
+          contactMsg.style.background = '#ffe0e0';
+          contactMsg.style.color = '#c0392b';
+          contactMsg.textContent = 'Iltimas, atinizdi ham emailinizdi kiritin.';
+          return;
+        }
+
+        contactSubmitBtn.disabled = true;
+        contactSubmitBtn.textContent = 'Jiberilmekte...';
+        contactMsg.style.display = 'none';
+
+        apiPost('/contact/contact', { name: name, email: email, phone: phone, subject: subject, text: text })
+          .then(function() {
+            contactMsg.style.display = 'block';
+            contactMsg.style.background = '#e0ffe0';
+            contactMsg.style.color = '#27ae60';
+            contactMsg.textContent = 'SMS jiberildi!';
+            contactForm.reset();
+          })
+          .catch(function() {
+            contactMsg.style.display = 'block';
+            contactMsg.style.background = '#ffe0e0';
+            contactMsg.style.color = '#c0392b';
+            contactMsg.textContent = 'SMS jiberiwde qatelik. Iltimas, keyinlew qayta urinib ko\'rin.';
+          })
+          .finally(function() {
+            contactSubmitBtn.disabled = false;
+            contactSubmitBtn.textContent = 'SMS jiberiw';
+          });
+      });
+    }
+
+    // --- Newsletter Form ---
+    var newsletterForm = document.getElementById('newsletterForm');
+    var newsletterMsg = document.getElementById('newsletterMessage');
+    var newsletterBtn = document.getElementById('newsletterBtn');
+
+    if (newsletterForm) {
+      newsletterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var email = document.getElementById('newsletterEmail').value.trim();
+
+        if (!email) {
+          newsletterMsg.style.display = 'block';
+          newsletterMsg.style.background = '#ffe0e0';
+          newsletterMsg.style.color = '#c0392b';
+          newsletterMsg.textContent = 'Iltimas, emailinizdi kiritin.';
+          return;
+        }
+
+        newsletterBtn.disabled = true;
+        newsletterBtn.textContent = 'Obuna bo\'linmoqda...';
+        newsletterMsg.style.display = 'none';
+
+        apiPost('/contact/newsletter/subscribe', { email: email })
+          .then(function() {
+            newsletterMsg.style.display = 'block';
+            newsletterMsg.style.background = '#e0ffe0';
+            newsletterMsg.style.color = '#27ae60';
+            newsletterMsg.textContent = 'Obuna bo\'lindi!';
+            newsletterForm.reset();
+          })
+          .catch(function() {
+            newsletterMsg.style.display = 'block';
+            newsletterMsg.style.background = '#ffe0e0';
+            newsletterMsg.style.color = '#c0392b';
+            newsletterMsg.textContent = 'Obuna bo\'lishda xatolik. Iltimos, keyinroq qayta urinib ko\'ring.';
+          })
+          .finally(function() {
+            newsletterBtn.disabled = false;
+            newsletterBtn.textContent = 'Obuna bo\'lish';
+          });
+      });
+    }
+
+    // --- Load Restaurant Info for Footer ---
+    var footerAddress = document.getElementById('footerAddress');
+    var footerPhones = document.getElementById('footerPhones');
+    var footerSocial = document.getElementById('footerSocial');
+    var footerWorkingHours = document.getElementById('footerWorkingHours');
+
+    apiGet('/core/restaurant-info/')
+      .then(function(info) {
+        if (!info) return;
+
+        if (info.address && footerAddress) {
+          footerAddress.textContent = info.address;
+        }
+
+        if (info.phone && footerPhones) {
+          var phones = info.phone.split(',').map(function(p) { return p.trim(); });
+          footerPhones.innerHTML = phones.map(function(p) {
+            return '<p style="margin-top:12px;">' + p + '</p>';
+          }).join('');
+        }
+
+        if (info.working_hours && footerWorkingHours) {
+          footerWorkingHours.innerHTML = info.working_hours.replace(/\n/g, '<br />');
+        }
+
+        var socialLinks = [];
+        if (info.facebook_url) {
+          socialLinks.push('<a href="' + info.facebook_url + '" target="_blank" rel="noopener" aria-label="Facebook">f</a>');
+        }
+        if (info.instagram_url) {
+          socialLinks.push('<a href="' + info.instagram_url + '" target="_blank" rel="noopener" aria-label="Instagram">&#120143;</a>');
+        }
+        if (socialLinks.length && footerSocial) {
+          footerSocial.innerHTML = socialLinks.join('');
+        }
+
+        if (info.map_url) {
+          var iframe = document.querySelector('.map-section iframe');
+          if (iframe) iframe.src = info.map_url;
+        }
+      })
+      .catch(function() {});
+  </script>
+
+</body>
+</html>
+

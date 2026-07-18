@@ -1,0 +1,70 @@
+.news-page { padding: 0 20px 80px; }
+
+.news-page__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-bottom: 48px;
+}
+
+.news-card {
+  background: var(--color-white);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.news-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); }
+
+.news-card__img-wrap { width: 100%; height: 220px; overflow: hidden; }
+.news-card__img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+.news-card:hover .news-card__img-wrap img { transform: scale(1.05); }
+
+.news-card__body { padding: 20px; }
+.news-card__title { font-size: 18px; font-weight: 700; color: var(--color-text-dark); line-height: 1.35; margin-bottom: 10px; }
+.news-card__desc { font-size: 13px; color: var(--color-text-gray); line-height: 1.7; margin-bottom: 16px; }
+
+.news-card__footer { display: flex; justify-content: space-between; align-items: center; }
+.news-card__link { font-size: 14px; font-weight: 700; color: var(--color-primary); }
+.news-card__date { font-size: 13px; color: var(--color-text-gray); }
+
+.news-page__btn {
+  display: block;
+  margin: 0 auto;
+  background: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  padding: 12px 40px;
+  border-radius: 9999px;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.news-page__btn:hover { background: var(--color-primary); color: var(--color-white); }
+
+@media (max-width: 992px) { .news-page__grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) {
+  .news-page__grid { grid-template-columns: 1fr; gap: 20px; }
+  .news-page { padding: 0 16px 60px; }
+  .news-card__img-wrap { height: 200px; }
+}
+@media (max-width: 480px) {
+  .news-card__img-wrap { height: 180px; }
+  .news-page { padding: 0 12px 40px; }
+  .news-card__body { padding: 16px; }
+  .news-card__title { font-size: 16px; }
+}
+
+@media (max-width: 360px) {
+  .news-page { padding: 0 8px 30px; }
+  .news-card__body { padding: 12px; }
+  .news-card__title { font-size: 14px; }
+  .news-card__desc { font-size: 12px; }
+  .news-card__img-wrap { height: 150px; }
+  .news-page__btn { padding: 10px 28px; font-size: 13px; }
+}
