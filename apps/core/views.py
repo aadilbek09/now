@@ -1,6 +1,9 @@
+import os
 import uuid
 
+from django.conf import settings
 from django.core.files.storage import default_storage
+from django.http import HttpResponse, Http404
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -85,3 +88,23 @@ class AdminRestaurantInfoUpdateView(generics.UpdateAPIView):
     queryset = RestaurantInfo.objects.all()
     serializer_class = RestaurantInfoSerializer
     permission_classes = [IsAdminRole]
+
+
+# ---------- Frontend (Static HTML) ----------
+FRONTEND_DIR = os.path.join(settings.BASE_DIR, 'static', 'frontend')
+
+
+def serve_frontend(request, page='index.html'):
+    """
+    Frontend HTML fayllarini xizmat qilish (Django orqali).
+    / -> static/frontend/index.html
+    /menu/ -> static/frontend/menu.html
+    """
+    if not page.endswith('.html'):
+        page += '.html'
+    file_path = os.path.join(FRONTEND_DIR, page)
+    if not os.path.exists(file_path):
+        raise Http404('Sahifa topilmadi')
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    return HttpResponse(content)
