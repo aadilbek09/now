@@ -43,6 +43,7 @@ urlpatterns = [
     path("news/", include("apps.news.urls")),
     path("orders/", include("apps.orders.urls")),
     path("core/", include("apps.core.urls")),
+    path("", include("apps.core.urls")),
 ]
 
 urlpatterns += static(
