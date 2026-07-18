@@ -16,8 +16,10 @@ class Order(models.Model):
         COMPLETED = 'completed', 'Yakunlandi'
         CANCELLED = 'cancelled', 'Bekor qilindi'
 
-    customer_name = models.CharField(max_length=150, blank=True)
-    customer_phone = models.CharField(max_length=20, blank=True)
+    customer_name = models.CharField(max_length=150, blank=True, verbose_name='Ism')
+    customer_last_name = models.CharField(max_length=150, blank=True, verbose_name='Familiya')
+    customer_phone = models.CharField(max_length=20, blank=True, verbose_name='Telefon')
+    address = models.TextField(blank=True, verbose_name='Manzil')
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     channel = models.CharField(
         max_length=10, choices=Channel.choices, default=Channel.ONLINE

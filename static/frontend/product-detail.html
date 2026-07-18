@@ -33,6 +33,26 @@
     .pd-input { width: 100%; padding: 12px; border: 1px solid var(--color-border); border-radius: 10px; font-size: 14px; font-family: inherit; resize: vertical; }
     .pd-submit { margin-top: 10px; background: var(--color-primary); color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; }
     .pd-loading { text-align: center; padding: 60px 20px; color: #999; }
+    .pd-order { cursor: pointer; text-align: center; }
+    /* ===== Order Modal ===== */
+    .om-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+    .om-overlay.open { display: flex; }
+    .om-modal { background: var(--color-surface); border-radius: 16px; width: 100%; max-width: 420px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,.3); max-height: 90vh; overflow-y: auto; }
+    .om-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .om-sub { font-size: 13px; color: #888; margin-bottom: 18px; }
+    .om-field { margin-bottom: 14px; }
+    .om-field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .om-input { width: 100%; padding: 11px 12px; border: 1px solid var(--color-border); border-radius: 10px; font-size: 14px; font-family: inherit; }
+    .om-input:focus { outline: none; border-color: var(--color-primary); }
+    .om-error { color: #e74c3c; font-size: 13px; margin-bottom: 10px; display: none; }
+    .om-actions { display: flex; gap: 10px; margin-top: 8px; }
+    .om-btn { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; font-size: 14px; }
+    .om-btn--submit { background: var(--color-primary); color: #fff; }
+    .om-btn--cancel { background: #eee; color: #555; }
+    .om-success { text-align: center; padding: 20px 0; }
+    .om-success__icon { font-size: 48px; color: #2ecc71; }
+    .om-success__title { font-size: 18px; font-weight: 700; margin: 10px 0 6px; }
+    .om-success__text { font-size: 14px; color: #777; }
   </style>
 </head>
 <body>
@@ -61,6 +81,37 @@
       <p class="pd-loading">Yuklanmoqda...</p>
     </div>
   </main>
+
+  <!-- ===== Order Modal ===== -->
+  <div class="om-overlay" id="orderModal">
+    <div class="om-modal" id="orderModalInner">
+      <div id="orderFormWrap">
+        <div class="om-title">Buyurtma berish</div>
+        <div class="om-sub" id="orderProductName"></div>
+        <div class="om-error" id="orderError"></div>
+        <div class="om-field">
+          <label for="omName">Ism</label>
+          <input class="om-input" id="omName" type="text" placeholder="Ismingiz" />
+        </div>
+        <div class="om-field">
+          <label for="omLastName">Familiya</label>
+          <input class="om-input" id="omLastName" type="text" placeholder="Familiyangiz" />
+        </div>
+        <div class="om-field">
+          <label for="omPhone">Telefon raqam</label>
+          <input class="om-input" id="omPhone" type="tel" placeholder="+998 9X XXX XX XX" />
+        </div>
+        <div class="om-field">
+          <label for="omAddress">Manzil</label>
+          <textarea class="om-input" id="omAddress" rows="2" placeholder="Yetkazib berish manzili"></textarea>
+        </div>
+        <div class="om-actions">
+          <button class="om-btn om-btn--cancel" id="omCancel">Bekor qilish</button>
+          <button class="om-btn om-btn--submit" id="omSubmit">Buyurtma berish</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="/static/frontend/api.js"></script>
   <script>
@@ -98,9 +149,7 @@
             '<div class="pd-name">' + (p.name || '') + '</div>' +
             '<div class="pd-price">' + (p.price || 0) + ' so\'m</div>' +
             '<div class="pd-desc">' + (p.description || 'Ta\'rif mavjud emas.') + '</div>' +
-            '<a class="pd-order" href="https://wa.me/998912555309?text=' +
-              encodeURIComponent('Salem! Men buyurtpa berejaqpan:\n\n' + (p.name || '') + ' - ' + (p.price || 0) + ' so\'m\n\nTelefon: +998912555309 yoki +998933350805') +
-              '" target="_blank">WhatsApp orqali buyurtma</a>' +
+            '<button class="pd-order" id="pdOrderBtn">Buyurtma berish</button>' +
           '</div>' +
         '</div>' +
 
@@ -128,6 +177,7 @@
 
       document.getElementById('pdContent').innerHTML = html;
       initProductInteractions();
+      initOrderModal(p);
       loadComments();
       loadRating();
       loadLikes();
@@ -165,8 +215,7 @@
       });
     }
 
-    function loadComments() {
-      var el = document.getElementById('pdComments');
+    function loadComments() {      var el = document.getElementById('pdComments');
       if (!el) return;
       el.innerHTML = '<p style="color:#999;font-size:13px;">Izohlar yuklanmoqda...</p>';
       apiGet('/menu/products/' + productId + '/comments').then(function(comments) {
@@ -232,6 +281,79 @@
         if (res.dislikes_count != null && document.getElementById('pdDislikeCount'))
           document.getElementById('pdDislikeCount').textContent = res.dislikes_count;
       }).catch(function() { console.error('like failed'); });
+    }
+
+    function initOrderModal(product) {
+      var orderBtn = document.getElementById('pdOrderBtn');
+      var modal = document.getElementById('orderModal');
+      var cancelBtn = document.getElementById('omCancel');
+      var submitBtn = document.getElementById('omSubmit');
+      var errorEl = document.getElementById('orderError');
+      var nameEl = document.getElementById('omName');
+      var lastNameEl = document.getElementById('omLastName');
+      var phoneEl = document.getElementById('omPhone');
+      var addressEl = document.getElementById('omAddress');
+      var productNameEl = document.getElementById('orderProductName');
+      var formWrap = document.getElementById('orderFormWrap');
+      var modalInner = document.getElementById('orderModalInner');
+
+      if (productNameEl) {
+        productNameEl.textContent = (product.name || '') + ' — ' + (product.price || 0) + ' so\'m';
+      }
+
+      function openModal() {
+        if (errorEl) { errorEl.style.display = 'none'; errorEl.textContent = ''; }
+        if (formWrap) formWrap.style.display = 'block';
+        modal.classList.add('open');
+      }
+
+      function closeModal() {
+        modal.classList.remove('open');
+      }
+
+      if (orderBtn) orderBtn.addEventListener('click', openModal);
+      if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+      });
+
+      if (submitBtn) submitBtn.addEventListener('click', function() {
+        var name = nameEl.value.trim();
+        var lastName = lastNameEl.value.trim();
+        var phone = phoneEl.value.trim();
+        var address = addressEl.value.trim();
+
+        if (!name) { errorEl.textContent = 'Iltimos, ismingizni kiriting.'; errorEl.style.display = 'block'; return; }
+        if (!phone) { errorEl.textContent = 'Iltimos, telefon raqamingizni kiriting.'; errorEl.style.display = 'block'; return; }
+        if (!address) { errorEl.textContent = 'Iltimos, manzilni kiriting.'; errorEl.style.display = 'block'; return; }
+
+        errorEl.style.display = 'none';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Yuborilmoqda...';
+
+        apiPost('/orders/orders', {
+          customer_name: name,
+          customer_last_name: lastName,
+          customer_phone: phone,
+          address: address,
+          channel: 'online',
+          items: [{ product_id: productId, quantity: 1 }]
+        }).then(function() {
+          modalInner.innerHTML =
+            '<div class="om-success">' +
+              '<div class="om-success__icon">✓</div>' +
+              '<div class="om-success__title">Buyurtmangiz qabul qilindi!</div>' +
+              '<div class="om-success__text">Tez orada siz bilan bog\'lanamiz.</div>' +
+            '</div>';
+          setTimeout(closeModal, 2000);
+        }).catch(function() {
+          errorEl.textContent = 'Xatolik yuz berdi. Iltimos, qaytadan urinib ko\'ring.';
+          errorEl.style.display = 'block';
+        }).finally(function() {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Buyurtma berish';
+        });
+      });
     }
 
     function init() {
