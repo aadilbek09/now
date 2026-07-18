@@ -257,6 +257,7 @@
             '<p class="dish-card__name">' + escapeHtml(p.name) + '</p>' +
             '<div class="dish-card__stars">' + renderStars(p.average_rating, p.ratings_count) + '</div>' +
             '<span class="dish-card__price">' + p.price + ' so\'m</span>' +
+            '<button type="button" class="dish-card__btn" onclick="openProduct(this.closest(\'.dish-card\'))">Batafsil</button>' +
           '</div>';
         }).join('');
       }).catch(function() {

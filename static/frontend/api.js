@@ -173,6 +173,18 @@ function openProduct(item) {
     }).catch(function() {
       commentsEl.innerHTML = '<p style="text-align:center;color:#999;font-size:13px;">Izohlarni yuklashda xatolik.</p>';
     });
+
+    apiGet('/menu/products/' + id).then(function(p) {
+      if (p && p.name) {
+        nameEl.textContent = p.name;
+        if (p.description) descEl.textContent = p.description;
+        if (p.category_name) catEl.textContent = p.category_name;
+      }
+    }).catch(function() {
+      console.warn('Mahsulot tafsilotlarini yuklab bo\'lmadi:', id);
+    });
+  } else {
+    commentsEl.innerHTML = '<p style="text-align:center;color:#999;font-size:13px;">Hali izohlar yo\'q.</p>';
   }
 
   modal.classList.add('open');
