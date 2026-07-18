@@ -602,32 +602,52 @@
       document.getElementById('postImage').value = '';
       var preview = document.getElementById('postImagePreview');
       var catSelect = document.getElementById('postCategory');
-      if (!catSelect.dataset.loaded) {
+
+      function fillFields() {
+        if (data) {
+          document.getElementById('postModalTitle').textContent = 'Mahsulotni tahrirlash';
+          document.getElementById('postEditId').value = data.id;
+          document.getElementById('postTitle').value = data.name || '';
+          document.getElementById('postDesc').value = data.description || '';
+          document.getElementById('postContent').value = data.description || '';
+          if (data.category) catSelect.value = data.category;
+          if (data.image) {
+            preview.innerHTML = '<img src="' + data.image + '" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid var(--color-border);" />';
+          } else { preview.innerHTML = ''; }
+        } else {
+          document.getElementById('postModalTitle').textContent = 'Yangi mahsulot';
+          document.getElementById('postEditId').value = '';
+          document.getElementById('postTitle').value = '';
+          document.getElementById('postDesc').value = '';
+          document.getElementById('postContent').value = '';
+          preview.innerHTML = '';
+        }
+      }
+
+      if (productCategories.length === 0) {
         apiGet('/menu/categories').then(function(cats) {
           productCategories = Array.isArray(cats) ? cats : [];
+          if (productCategories.length === 0) {
+            catSelect.innerHTML = '<option value="">Kategoriya yo\'q</option>';
+          } else {
+            catSelect.innerHTML = productCategories.map(function(c) {
+              return '<option value="' + c.id + '">' + c.name + '</option>';
+            }).join('');
+          }
+          fillFields();
+        }).catch(function() {
+          catSelect.innerHTML = '<option value="">Kategoriya yuklanmadi</option>';
+          fillFields();
+        });
+      } else {
+        if (productCategories.length === 0) {
+          catSelect.innerHTML = '<option value="">Kategoriya yo\'q</option>';
+        } else {
           catSelect.innerHTML = productCategories.map(function(c) {
             return '<option value="' + c.id + '">' + c.name + '</option>';
           }).join('');
-          catSelect.dataset.loaded = '1';
-        });
-      }
-      if (data) {
-        document.getElementById('postModalTitle').textContent = 'Mahsulotni tahrirlash';
-        document.getElementById('postEditId').value = data.id;
-        document.getElementById('postTitle').value = data.name || '';
-        document.getElementById('postDesc').value = data.description || '';
-        document.getElementById('postContent').value = data.description || '';
-        if (data.category) catSelect.value = data.category;
-        if (data.image) {
-          preview.innerHTML = '<img src="' + data.image + '" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid var(--color-border);" />';
-        } else { preview.innerHTML = ''; }
-      } else {
-        document.getElementById('postModalTitle').textContent = 'Yangi mahsulot';
-        document.getElementById('postEditId').value = '';
-        document.getElementById('postTitle').value = '';
-        document.getElementById('postDesc').value = '';
-        document.getElementById('postContent').value = '';
-        preview.innerHTML = '';
+        }
+        fillFields();
       }
       modal.classList.add('open');
     }
@@ -691,6 +711,11 @@
       var modal = document.getElementById('postModal');
       document.getElementById('postImage').value = '';
       var preview = document.getElementById('postImagePreview');
+      var pcat = document.getElementById('postCategory');
+      pcat.innerHTML = '<option value="yangiliklar">Yangiliklar</option>' +
+        '<option value="aksiya">Aksiya</option>' +
+        '<option value="menu">Menu</option>' +
+        '<option value="tadbirlar">Tadbirlar</option>';
       if (data) {
         document.getElementById('postModalTitle').textContent = 'E\'lonni tahrirlash';
         document.getElementById('postEditId').value = data.id;
@@ -1083,6 +1108,7 @@
     loadSalesChannel();
     loadTopProducts();
     loadRecentOrders();
+    loadCategories();
     loadProducts();
     loadPosts();
     loadMessages();
