@@ -311,9 +311,7 @@
       priceEl.textContent = '';
 
       orderBtn.onclick = function() {
-        var msg = 'Salem! Men bu haqda qoshmasha mag\'liwmat aliwdi qa' +
-          'leym\'en:\n\n' + (post ? post.title : '') + '\n\nTelefon: +998912555309 yaki +998933350805';
-        window.open('https://wa.me/998912555309?text=' + encodeURIComponent(msg), '_blank');
+        window.location.href = '/contact/';
       };
 
       modal.classList.add('open');
