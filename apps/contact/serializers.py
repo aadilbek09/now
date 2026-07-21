@@ -17,8 +17,14 @@ class MessageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ('id', 'name', 'email', 'phone', 'subject', 'text', 'is_read', 'created_at')
+        fields = ('id', 'name', 'email', 'phone', 'subject', 'text', 'reply', 'reply_created_at', 'is_read', 'created_at')
         read_only_fields = fields
+
+
+class MessageReplySerializer(serializers.Serializer):
+    """PATCH /api/admin/messages/{id}/reply — Admin javob yozish."""
+
+    reply = serializers.CharField()
 
 
 class NewsletterSubscribeSerializer(serializers.ModelSerializer):

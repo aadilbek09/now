@@ -59,7 +59,7 @@
           <button class="product-modal-order" id="productModalOrder">Buyurtpa beriw</button>
           <p style="font-size:12px;color:var(--color-text-gray);margin-top:8px;text-align:center;">&#128222; +998912555309 / +998933350805</p>
 
-          <div class="product-modal-divider"></div>
+          <div class="product-modal-divider" id="productModalDivider"></div>
           <div class="product-actions">
             <button class="product-like" id="productLikeBtn">&#128077; <span id="productLikeCount">0</span></button>
             <button class="product-dislike" id="productDislikeBtn">&#128078; <span id="productDislikeCount">0</span></button>
@@ -222,7 +222,7 @@
             '<p class="news-card__title">' + escapeHtml(post.title) + '</p>' +
             '<p class="news-card__desc">' + escapeHtml(post.desc) + '</p>' +
             '<div class="news-card__footer">' +
-              '<a href="#" class="news-card__link" data-id="' + post.id + '">Ko\'rish</a>' +
+              '<a href="javascript:void(0)" class="news-card__link" data-id="' + post.id + '">Ko\'rish</a>' +
               '<span class="news-card__date">' + formatDate(post.created_at) + '</span>' +
             '</div>' +
           '</div>';
@@ -243,6 +243,25 @@
     }
 
     loadPosts('/news/posts');
+
+    document.getElementById('newsGrid').addEventListener('click', function(e) {
+      var link = e.target.closest('.news-card__link');
+      if (!link) return;
+      e.preventDefault();
+      var card = link.closest('.news-card');
+      if (!card) return;
+      var postId = link.getAttribute('data-id');
+      var post = allPosts.find(function(p) { return String(p.id) === postId; });
+      if (!post) return;
+      document.getElementById('productModalImg').src = post.image || '';
+      document.getElementById('productModalCategory').textContent = 'Yangilik';
+      document.getElementById('productModalName').textContent = post.title || '';
+      document.getElementById('productModalDesc').textContent = post.desc || '';
+      document.getElementById('productModalPrice').style.display = 'none';
+      document.getElementById('productModalOrder').style.display = 'none';
+      document.getElementById('productModalDivider').style.display = 'none';
+      document.getElementById('productModal').classList.add('open');
+    });
 
     if (viewMoreBtn) {
       viewMoreBtn.addEventListener('click', function() {
@@ -323,6 +342,9 @@
       document.getElementById('productModalName').textContent = name;
       document.getElementById('productModalDesc').textContent = desc;
       document.getElementById('productModalPrice').textContent = price;
+      document.getElementById('productModalPrice').style.display = '';
+      document.getElementById('productModalOrder').style.display = '';
+      document.getElementById('productModalDivider').style.display = '';
 
       document.getElementById('productModalOrder').onclick = function() {
         var msg = 'Salem! Men buyurtpa berjaqpan:\n\n' + name + ' - ' + price + '\n\nKategoriya: ' + category + '\n\nTelefon: +998912555309 yoki +998933350805';

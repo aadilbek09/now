@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, status
@@ -9,6 +10,7 @@ from apps.accounts.permissions import IsAdminRole
 from .models import Message, NewsletterSubscriber, Testimonial
 from .serializers import (
     MessageCreateSerializer,
+    MessageReplySerializer,
     MessageSerializer,
     NewsletterSubscribeSerializer,
     TestimonialSerializer,
@@ -61,6 +63,24 @@ class AdminMessageMarkReadView(APIView):
             return Response({'detail': 'Xabar topilmadi.'}, status=404)
         message.is_read = True
         message.save(update_fields=['is_read'])
+        return Response(MessageSerializer(message).data)
+
+
+class AdminMessageReplyView(APIView):
+    """PATCH /api/admin/messages/{id}/reply — Admin javob yozish."""
+
+    permission_classes = [IsAdminRole]
+
+    def patch(self, request, id):
+        try:
+            message = Message.objects.get(id=id)
+        except Message.DoesNotExist:
+            return Response({'detail': 'Xabar topilmadi.'}, status=404)
+        serializer = MessageReplySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        message.reply = serializer.validated_data['reply']
+        message.reply_created_at = timezone.now()
+        message.save(update_fields=['reply', 'reply_created_at'])
         return Response(MessageSerializer(message).data)
 
 

@@ -529,7 +529,7 @@
 
     // ===== POSTS =====
     function loadPosts() {
-      apiGet('/news/posts').then(function(data) {
+      apiGet('/news/admin/posts').then(function(data) {
         posts = Array.isArray(data) ? data : (data.results || []);
         renderPosts();
       }).catch(function(e) { console.error('Posts load error:', e); });
@@ -801,7 +801,13 @@
 
       document.getElementById('msgDetailName').textContent = m.name || 'Noma\'lum';
       document.getElementById('msgDetailMeta').textContent = formatDate(m.created_at) + ' | ' + (m.text || '').slice(0, 30) + '...';
-      document.getElementById('msgDetailBody').innerHTML = '<div style="background:#1A1A1A;padding:16px;border-radius:10px;"><p class="msg-detail__text" style="color:#E5E5E5;">' + (m.text || '') + '</p></div>';
+      var bodyHtml = '<div style="background:#1A1A1A;padding:16px;border-radius:10px;"><p class="msg-detail__text" style="color:#E5E5E5;">' + (m.text || '') + '</p></div>';
+      if (m.reply) {
+        bodyHtml += '<div style="background:#0F2740;padding:16px;border-radius:10px;border:1px solid #1E3A5F;margin-top:10px;">' +
+          '<p style="font-size:12px;font-weight:600;color:#60A5FA;margin-bottom:4px;">Sizning javobingiz:</p>' +
+          '<p style="font-size:13px;color:#E5E5E5;">' + m.reply + '</p></div>';
+      }
+      document.getElementById('msgDetailBody').innerHTML = bodyHtml;
       document.getElementById('msgReplyArea').style.display = 'block';
       document.getElementById('msgReplyInput').value = '';
       document.getElementById('msgReplyInput').placeholder = (m.name || 'Mijoz') + ' ga javob yozing...';
@@ -822,13 +828,22 @@
       if (!text) return;
       var m = messages.find(function(x) { return x.id === selectedMsgId; });
       if (!m) return;
-      alert('Javob "' + (m.name || 'Mijoz') + '" ga yuborildi:\n\n' + text);
-      input.value = '';
-      document.getElementById('msgDetailBody').innerHTML =
-        '<div style="background:#1A1A1A;padding:16px;border-radius:10px;margin-bottom:12px;"><p class="msg-detail__text" style="color:#E5E5E5;">' + (m.text || '') + '</p></div>' +
-        '<div style="background:#0F2740;padding:16px;border-radius:10px;border:1px solid #1E3A5F;">' +
-          '<p style="font-size:12px;font-weight:600;color:#60A5FA;margin-bottom:4px;">Sizning javobingiz:</p>' +
-          '<p style="font-size:13px;color:#E5E5E5;">' + text + '</p></div>';
+      var replyBtn = document.querySelector('.msg-reply-panel button');
+      replyBtn.disabled = true;
+      replyBtn.textContent = 'Yuborilmoqda...';
+      apiPatch('/contact/admin/messages/' + selectedMsgId + '/reply', { reply: text }).then(function(data) {
+        m.reply = text;
+        m.reply_created_at = new Date().toISOString();
+        input.value = '';
+        renderMessages();
+        showMessageDetail(m);
+      }).catch(function(err) {
+        console.error('Reply failed:', err);
+        alert('Javob yuborishda xatolik.');
+      }).finally(function() {
+        replyBtn.disabled = false;
+        replyBtn.textContent = 'Javob yuborish';
+      });
     }
 
     function generateReply() {

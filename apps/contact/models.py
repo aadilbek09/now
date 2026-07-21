@@ -9,6 +9,8 @@ class Message(models.Model):
     phone = models.CharField(max_length=20, blank=True)
     subject = models.CharField(max_length=255, blank=True, null=True, help_text="Xabar mavzusi")
     text = models.TextField()
+    reply = models.TextField(blank=True, default='', help_text="Admin javobi")
+    reply_created_at = models.DateTimeField(blank=True, null=True, help_text="Javob berilgan vaqt")
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
