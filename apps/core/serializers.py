@@ -23,4 +23,4 @@ class RestaurantInfoSerializer(serializers.ModelSerializer):
             'id', 'address', 'phone', 'working_hours',
             'map_url', 'instagram_url', 'facebook_url', 'updated_at',
         )
-        read_only_fields = fields
+        read_only_fields = ('id', 'updated_at')

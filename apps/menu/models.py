@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import *
 from django.conf import settings
 
 class Category(models.Model):
@@ -31,9 +30,9 @@ class Product(models.Model):
         return self.name
 
 class ProductComment(models.Model):
-    product = ForeignKey(Product, CASCADE, related_name='comments')
-    text = TextField()
-    created_at = DateTimeField(auto_now_add=True)
+    product = models.ForeignKey(Product, models.CASCADE, related_name='comments')
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
 class ProductLike(models.Model):
     product = models.ForeignKey(

@@ -6,7 +6,7 @@ var API_BASE = (function() {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://127.0.0.1:8000';
   }
-  return 'http://127.0.0.1:8000';
+  return window.location.origin;
 })();
 
 function getToken() { return localStorage.getItem('access_token'); }

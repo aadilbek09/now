@@ -1,4 +1,3 @@
-from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, status
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -195,13 +194,17 @@ class ProductRatingCreateView(generics.CreateAPIView):
         return Response({'score': rating.score}, status=status.HTTP_200_OK)
 
 
-class ProductRatingDetailView(generics.RetrieveAPIView):
+class ProductRatingDetailView(APIView):
     serializer_class = ProductRatingSerializer
     permission_classes = [permissions.AllowAny]
 
-    def get_object(self):
-        product = get_object_or_404(Product, pk=self.kwargs['pk'])
-        rating = ProductRating.objects.filter(product=product).first()
+    def get(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        user = request.user if request.user.is_authenticated else None
+        if user:
+            rating = ProductRating.objects.filter(product=product, user=user).first()
+        else:
+            rating = None
         if not rating:
-            raise Http404("Rating topilmadi.")
-        return rating
+            return Response({'score': None, 'product': product.id}, status=status.HTTP_200_OK)
+        return Response({'score': rating.score, 'product': product.id, 'user': user.id if user else None})
