@@ -264,7 +264,7 @@
 
       modal.classList.add('open');
 
-      apiGet('/menu/products/' + id + '/').then(function(p) {
+      apiGet('/menu/products/' + id).then(function(p) {
         nameEl.textContent = p.name || '';
         catEl.textContent = p.category_name || '';
         descEl.textContent = p.description || 'Ta\'rif mavjud emas.';
