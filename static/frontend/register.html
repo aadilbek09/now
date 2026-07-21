@@ -174,20 +174,13 @@
           password2: password2
         });
         var msg = 'DI\'zimenen o\'tdinz!';
-        if (result && result.username && result.username !== username) {
-          msg += '\n\nSizdin username: ' + result.username + '\n(Esletpe: siz kiritgen username band edi, avtomatik qo\'yildi)';
+        if (result && result.user && result.user.username && result.user.username !== username) {
+          msg += '\n\nSizdin username: ' + result.user.username + '\n(Esletpe: siz kiritgen username band edi, avtomatik qo\'yildi)';
         } else {
-          msg += '\n\nUsername: ' + (result ? result.username : username);
+          msg += '\n\nUsername: ' + (result && result.user ? result.user.username : username);
         }
         alert(msg);
-        try {
-          var loginData = await apiPost('/accounts/auth/login', { username: username, password: password });
-          setTokens(loginData.access, loginData.refresh);
-          setUser(loginData.user);
-          window.location.href = '/profile/';
-        } catch (e) {
-          window.location.href = '/login/';
-        }
+        window.location.href = 'login.html';
       } catch (err) {
         if (err && err.json) {
           err.json().then(function (data) {

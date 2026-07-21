@@ -6,7 +6,6 @@ var API_BASE = (function() {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://127.0.0.1:8000';
   }
-  // Production: use same origin (Django serves both API and frontend)
   return window.location.origin;
 })();
 

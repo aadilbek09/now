@@ -116,12 +116,13 @@
       <button class="modal__close" id="modalClose">&times;</button>
       <p class="modal__title">Restaran</p>
       <p class="modal__sub">Qosh kelibsiz! Iltimas, tizimge kirin.</p>
-      <form class="modal__form">
-        <input type="email" placeholder="Email" required />
-        <input type="password" placeholder="Parol" required />
+      <form class="modal__form" id="loginModalForm">
+        <input type="text" id="loginModalUsername" placeholder="Username" required />
+        <input type="password" id="loginModalPassword" placeholder="Parol" required />
+        <p class="modal__error" id="loginModalError"></p>
         <button class="modal__submit" type="submit">Kirish</button>
       </form>
-      <p class="modal__forgot">Akauntiniz joqpa? <a href="#">Dizimnen otiw</a></p>
+      <p class="modal__forgot">Akauntiniz joqpa? <a href="/register/">Dizimnen otiw</a></p>
     </div>
   </div>
 
@@ -154,6 +155,31 @@
       modalClose.addEventListener('click', function() { modalOverlay.classList.remove('open'); });
       modalOverlay.addEventListener('click', function(e) { if (e.target === modalOverlay) modalOverlay.classList.remove('open'); });
     }
+
+    document.getElementById('loginModalForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var username = document.getElementById('loginModalUsername').value;
+      var password = document.getElementById('loginModalPassword').value;
+      var errorEl = document.getElementById('loginModalError');
+      errorEl.textContent = '';
+      try {
+        var data = await apiPost('/accounts/auth/login', { username: username, password: password });
+        setTokens(data.access, data.refresh);
+        setUser(data.user);
+        modalOverlay.classList.remove('open');
+        location.reload();
+      } catch (err) {
+        if (err && err.json) {
+          err.json().then(function(errData) {
+            errorEl.textContent = errData.detail || 'Username yaki parol qatelik';
+          }).catch(function() {
+            errorEl.textContent = 'Username yaki parol qatelik';
+          });
+        } else {
+          errorEl.textContent = 'Username yaki parol qatelik';
+        }
+      }
+    });
 
     // --- Contact Form ---
     var contactForm = document.getElementById('contactForm');
@@ -291,4 +317,3 @@
 
 </body>
 </html>
-

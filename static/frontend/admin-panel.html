@@ -23,10 +23,6 @@
         Dashboard
       </button>
       <div class="sidebar__label">Kontent</div>
-      <button class="sidebar__item" data-tab="products">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        Mahsulotlar
-      </button>
       <button class="sidebar__item" data-tab="posts">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         Jariyalar
@@ -226,23 +222,6 @@
         </div>
       </div>
 
-      <!-- ===================== PRODUCTS TAB ===================== -->
-      <div class="tab-content" id="tabProducts">
-        <div class="section-header">
-          <div>
-            <h2 class="section-header__title">Mahsulotlar</h2>
-            <p class="section-header__sub">Restaran menyusidagi barcha mahsulotlarni boshqaring</p>
-          </div>
-          <button class="btn btn--primary" onclick="openProductModal()">+ Yangi mahsulot</button>
-        </div>
-
-        <div class="posts-toolbar">
-          <input class="posts-search" id="productSearch" placeholder="Mahsulotlarni qidirish..." oninput="filterProducts()" />
-        </div>
-
-        <div class="posts-grid" id="productsGrid"></div>
-      </div>
-
       <!-- ===================== POSTS TAB ===================== -->
       <div class="tab-content" id="tabPosts">
         <div class="section-header">
@@ -409,7 +388,7 @@
     (function authCheck() {
       var user = getUser();
       if (!user || user.role !== 'admin') {
-        window.location.href = '/login/';
+        window.location.href = 'login.html';
         return;
       }
       currentUserData = user;
@@ -422,7 +401,7 @@
     function doLogout() {
       if (!confirm('Tizimdan chiqishni xohlaysizmi?')) return;
       clearTokens();
-      window.location.href = '/login/';
+      window.location.href = 'login.html';
     }
 
     // ===== FORMAT HELPERS =====
@@ -548,125 +527,6 @@
       }).catch(function(e) { console.error('Orders load error:', e); });
     }
 
-    // ===== PRODUCTS =====
-    var products = [];
-    var productCategories = [];
-
-    function loadCategories() {
-      apiGet('/menu/categories').then(function(data) {
-        productCategories = Array.isArray(data) ? data : [];
-      }).catch(function(e) { console.error('Categories load error:', e); });
-    }
-
-    function loadProducts() {
-      apiGet('/menu/admin/products').then(function(data) {
-        products = Array.isArray(data) ? data : (data.results || []);
-        renderProducts();
-      }).catch(function(e) { console.error('Products load error:', e); });
-    }
-
-    function renderProducts() {
-      var grid = document.getElementById('productsGrid');
-      var search = (document.getElementById('productSearch').value || '').toLowerCase();
-      var filtered = products.filter(function(p) {
-        return (p.name || '').toLowerCase().includes(search) || (p.category_name || '').toLowerCase().includes(search);
-      });
-      if (filtered.length === 0) {
-        grid.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#128722;</div><p class="empty-state__text">Hozircha mahsulotlar yo\'q</p></div>';
-        return;
-      }
-      grid.innerHTML = filtered.map(function(p) {
-        var imgSrc = p.image || p.image_big || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80';
-        var catName = p.category_name || (productCategories.find(function(c){ return c.id === p.category; }) || {}).name || '';
-        return '<div class="post-card">' +
-          '<img class="post-card__img" src="' + imgSrc + '" alt="' + (p.name || '') + '" onerror="this.style.display=\'none\'" />' +
-          '<div class="post-card__body">' +
-            '<div class="post-card__title">' + (p.name || '') + '</div>' +
-            '<div class="post-card__desc">' + (catName ? 'Kategoriya: ' + catName + '<br/>' : '') + (p.price ? p.price + ' so\'m' : '') + '</div>' +
-            '<div class="post-card__footer">' +
-              '<span class="post-card__date">' + (p.is_active ? '<span style="color:#16a34a;">Faol</span>' : '<span style="color:#dc2626;">Faol emas</span>') + '</span>' +
-              '<div class="post-card__actions">' +
-                '<button class="post-card__edit" onclick="editProduct(' + p.id + ')">&#9998;</button>' +
-                '<button class="post-card__del" onclick="deleteProduct(' + p.id + ')">&#128465;</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-      }).join('');
-    }
-
-    function filterProducts() { renderProducts(); }
-
-    function openProductModal(data) {
-      var modal = document.getElementById('postModal');
-      document.getElementById('postImage').value = '';
-      var preview = document.getElementById('postImagePreview');
-      var catSelect = document.getElementById('postCategory');
-
-      function fillFields() {
-        if (data) {
-          document.getElementById('postModalTitle').textContent = 'Mahsulotni tahrirlash';
-          document.getElementById('postEditId').value = data.id;
-          document.getElementById('postTitle').value = data.name || '';
-          document.getElementById('postDesc').value = data.description || '';
-          document.getElementById('postContent').value = data.description || '';
-          if (data.category) catSelect.value = data.category;
-          if (data.image) {
-            preview.innerHTML = '<img src="' + data.image + '" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid var(--color-border);" />';
-          } else { preview.innerHTML = ''; }
-        } else {
-          document.getElementById('postModalTitle').textContent = 'Yangi mahsulot';
-          document.getElementById('postEditId').value = '';
-          document.getElementById('postTitle').value = '';
-          document.getElementById('postDesc').value = '';
-          document.getElementById('postContent').value = '';
-          preview.innerHTML = '';
-        }
-      }
-
-      if (productCategories.length === 0) {
-        apiGet('/menu/categories').then(function(cats) {
-          productCategories = Array.isArray(cats) ? cats : [];
-          if (productCategories.length === 0) {
-            catSelect.innerHTML = '<option value="">Kategoriya yo\'q</option>';
-          } else {
-            catSelect.innerHTML = productCategories.map(function(c) {
-              return '<option value="' + c.id + '">' + c.name + '</option>';
-            }).join('');
-          }
-          fillFields();
-        }).catch(function() {
-          catSelect.innerHTML = '<option value="">Kategoriya yuklanmadi</option>';
-          fillFields();
-        });
-      } else {
-        if (productCategories.length === 0) {
-          catSelect.innerHTML = '<option value="">Kategoriya yo\'q</option>';
-        } else {
-          catSelect.innerHTML = productCategories.map(function(c) {
-            return '<option value="' + c.id + '">' + c.name + '</option>';
-          }).join('');
-        }
-        fillFields();
-      }
-      modal.classList.add('open');
-    }
-
-    function editProduct(id) {
-      var p = products.find(function(x) { return x.id === id; });
-      if (p) openProductModal(p);
-    }
-
-    function deleteProduct(id) {
-      if (!confirm('Bu mahsulotni o\'chirasizmi?')) return;
-      apiDelete('/menu/admin/products/' + id).then(function() {
-        loadProducts();
-      }).catch(function(e) {
-        console.error('Delete product error:', e);
-        alert('O\'chirishda xatolik yuz berdi');
-      });
-    }
-
     // ===== POSTS =====
     function loadPosts() {
       apiGet('/news/posts').then(function(data) {
@@ -711,11 +571,6 @@
       var modal = document.getElementById('postModal');
       document.getElementById('postImage').value = '';
       var preview = document.getElementById('postImagePreview');
-      var pcat = document.getElementById('postCategory');
-      pcat.innerHTML = '<option value="yangiliklar">Yangiliklar</option>' +
-        '<option value="aksiya">Aksiya</option>' +
-        '<option value="menu">Menu</option>' +
-        '<option value="tadbirlar">Tadbirlar</option>';
       if (data) {
         document.getElementById('postModalTitle').textContent = 'E\'lonni tahrirlash';
         document.getElementById('postEditId').value = data.id;
@@ -760,13 +615,11 @@
     function savePost(e) {
       e.preventDefault();
       var id = document.getElementById('postEditId').value;
-      var isProduct = document.getElementById('postModalTitle').textContent.indexOf('Mahsulot') !== -1;
       var formData = new FormData();
-      formData.append('name', document.getElementById('postTitle').value);
-      formData.append('description', document.getElementById('postDesc').value);
-      formData.append('price', document.getElementById('postContent').value || '0');
+      formData.append('title', document.getElementById('postTitle').value);
+      formData.append('desc', document.getElementById('postDesc').value);
+      formData.append('content', document.getElementById('postContent').value);
       formData.append('category', document.getElementById('postCategory').value);
-      formData.append('is_active', 'true');
 
       var fileInput = document.getElementById('postImage');
       if (fileInput.files && fileInput.files[0]) {
@@ -774,28 +627,6 @@
       }
 
       var req;
-      if (isProduct) {
-        if (id) {
-          req = apiPatchFormData('/menu/admin/products/' + id, formData);
-        } else {
-          req = apiPostFormData('/menu/admin/products', formData);
-        }
-        req.then(function() {
-          closePostModal();
-          loadProducts();
-        }).catch(function(e) {
-          console.error('Save product error:', e);
-          if (e && e.json) {
-            e.json().then(function(errData) { alert('Server xatolik: ' + JSON.stringify(errData)); }).catch(function() { alert('Saqlashda xatolik'); });
-          } else { alert('Saqlashda xatolik: ' + (e.message || '')); }
-        });
-        return;
-      }
-
-      formData.append('title', document.getElementById('postTitle').value);
-      formData.append('content', document.getElementById('postContent').value);
-      formData.append('desc', document.getElementById('postDesc').value);
-
       if (id) {
         req = apiPatchFormData('/news/admin/posts/' + id, formData);
       } else {
@@ -945,12 +776,6 @@
       var list = document.getElementById('messagesList');
       var unread = 0;
       var colors = ['blue','green','yellow','red','blue','green'];
-      if (!messages.length) {
-        list.innerHTML = '<div class="empty-state"><div class="empty-state__icon">&#128172;</div><p class="empty-state__text">Hozircha xabarlar yo\'q</p></div>';
-        document.getElementById('msgCount').textContent = '0 ta';
-        document.getElementById('msgBadge').style.display = 'none';
-        return;
-      }
       list.innerHTML = messages.map(function(m, i) {
         if (!m.is_read) unread++;
         var initials = (m.name || '??').split(' ').map(function(w) { return w.charAt(0); }).join('').toUpperCase().slice(0, 2);
@@ -1067,7 +892,6 @@
     // ===== TAB NAVIGATION =====
     var tabTitles = {
       dashboard: 'Dashboard',
-      products: 'Mahsulotlar',
       posts: 'E\'lonlar',
       messages: 'Xabarlar',
       settings: 'Sozlamalar'
@@ -1085,7 +909,6 @@
         document.getElementById('sidebar').classList.remove('sidebar--open');
 
         if (tab === 'settings') loadSettings();
-        if (tab === 'products') { loadCategories(); loadProducts(); }
       });
     });
 
@@ -1108,11 +931,8 @@
     loadSalesChannel();
     loadTopProducts();
     loadRecentOrders();
-    loadCategories();
-    loadProducts();
     loadPosts();
     loadMessages();
   </script>
 </body>
 </html>
-

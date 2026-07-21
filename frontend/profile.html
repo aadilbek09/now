@@ -33,25 +33,13 @@
     .profile-row__value { font-size: 14px; color: var(--color-text-dark); }
     .profile-badge { display: inline-block; padding: 4px 12px; background: var(--color-primary); color: #fff; border-radius: 20px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
     .profile-actions { margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
-    .btn {
-      padding: 12px 20px; border: none; border-radius: 10px; font-family: var(--font-family);
-      font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex;
-      align-items: center; gap: 6px;
-    }
-    .btn--primary { background: var(--color-primary); color: #fff; }
-    .btn--primary:hover { background: var(--color-primary-dark); }
-    .btn--ghost { background: var(--color-bg-light); color: var(--color-text-dark); border: 1px solid var(--color-border); }
-    .btn--ghost:hover { background: #e5e7eb; }
-    .btn--danger { background: #dc2626; color: #fff; }
-    .btn--danger:hover { background: #b91c1c; }
-    .btn--sm { padding: 8px 14px; font-size: 13px; }
     .profile-error { color: var(--color-primary); font-size: 13px; margin-top: 8px; }
     .profile-success { color: #16a34a; font-size: 13px; margin-top: 8px; }
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--color-text-dark); margin-bottom: 6px; }
     .form-group input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--color-border); border-radius: 10px; font-family: var(--font-family); font-size: 14px; outline: none; transition: border-color 0.2s; box-sizing: border-box; }
     .form-group input:focus { border-color: var(--color-primary); }
-    .hidden { display: none; }
+    .hidden { display: none !important; }
     .tab-bar { display: flex; gap: 4px; margin-bottom: 20px; background: var(--color-bg-light); border-radius: 12px; padding: 4px; }
     .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 10px; font-family: var(--font-family); font-size: 13px; font-weight: 600; cursor: pointer; background: transparent; color: var(--color-text-gray); transition: all 0.2s; }
     .tab-btn--active { background: var(--color-white); color: var(--color-text-dark); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
@@ -93,8 +81,8 @@
           <button class="tab-btn" data-tab="orders">Buyurtmalar</button>
         </div>
 
-        <!-- View Tab -->
         <div id="tabView">
+          <p class="profile-error" id="profileError"></p>
           <div class="profile-row"><span class="profile-row__label">ID</span><span class="profile-row__value" id="f-id">—</span></div>
           <div class="profile-row"><span class="profile-row__label">Username</span><span class="profile-row__value" id="f-username">—</span></div>
           <div class="profile-row"><span class="profile-row__label">Email</span><span class="profile-row__value" id="f-email">—</span></div>
@@ -103,7 +91,6 @@
           <div class="profile-row"><span class="profile-row__label">Ro'yxatdan o'tgan</span><span class="profile-row__value" id="f-joined">—</span></div>
         </div>
 
-        <!-- Edit Tab -->
         <div id="tabEdit" class="hidden">
           <form id="editForm">
             <div class="form-group">
@@ -131,7 +118,6 @@
           </form>
         </div>
 
-        <!-- Password Tab -->
         <div id="tabPassword" class="hidden">
           <form id="passwordForm">
             <div class="form-group">
@@ -152,16 +138,16 @@
           </form>
         </div>
 
-        <!-- Orders Tab -->
         <div id="tabOrders" class="hidden">
-          <div id="ordersList"></div>
+          <div id="ordersList">
+            <p style="color:var(--color-text-gray);font-size:14px;">Buyurtmalar yuklanmoqda...</p>
+          </div>
           <p class="profile-error" id="ordersError"></p>
-          <p class="profile-success" id="ordersEmpty" class="hidden">Hali buyurtmalar yo'q.</p>
         </div>
 
         <div class="profile-actions">
           <a href="/" class="btn btn--ghost">&larr; Bas panel</a>
-          <button class="btn btn--danger" id="logoutBtn">Chiqish</button>
+          <button class="btn btn--primary" id="logoutBtn" style="background:#dc2626;">Chiqish</button>
         </div>
       </div>
     </div>
@@ -184,7 +170,8 @@
         setUser(me);
         renderProfile(me);
       } catch (err) {
-        document.getElementById('profileError').textContent = 'Profilni yuklab bo\'lmadi. Qayta kiring.';
+        var el = document.getElementById('profileError');
+        if (el) el.textContent = 'Profilni yuklab bo\'lmadi. Qayta kiring.';
       }
     }
 
@@ -207,6 +194,10 @@
         img.src = me.avatar;
         img.classList.remove('hidden');
         document.getElementById('avatarPlaceholder').style.display = 'none';
+        img.onerror = function() {
+          img.classList.add('hidden');
+          document.getElementById('avatarPlaceholder').style.display = 'flex';
+        };
       } else {
         document.getElementById('avatarPlaceholder').textContent = me.username.charAt(0).toUpperCase();
         document.getElementById('avatarPlaceholder').style.display = 'flex';
@@ -214,19 +205,17 @@
       }
     }
 
-    // Tab switching
     document.querySelectorAll('.tab-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
         document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('tab-btn--active'); });
         btn.classList.add('tab-btn--active');
-        document.querySelectorAll('[id^="tab"]').forEach(function(t) { t.classList.add('hidden'); });
+        document.querySelectorAll('#tabView, #tabEdit, #tabPassword, #tabOrders').forEach(function(t) { t.classList.add('hidden'); });
         var tabId = 'tab' + btn.dataset.tab.charAt(0).toUpperCase() + btn.dataset.tab.slice(1);
         document.getElementById(tabId).classList.remove('hidden');
         if (btn.dataset.tab === 'orders') loadOrders();
       });
     });
 
-    // Edit profile
     document.getElementById('editForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       var errorEl = document.getElementById('editError');
@@ -260,7 +249,6 @@
       }
     });
 
-    // Change password
     document.getElementById('passwordForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       var errorEl = document.getElementById('passwordError');
@@ -296,13 +284,13 @@
       }
     });
 
-    // Load orders
     async function loadOrders() {
       var container = document.getElementById('ordersList');
       var errorEl = document.getElementById('ordersError');
       errorEl.textContent = '';
       try {
-        var orders = await apiGet('/orders/orders/my');
+        var resp = await apiGet('/orders/orders/my');
+        var orders = resp && resp.results ? resp.results : (Array.isArray(resp) ? resp : []);
         if (!orders || orders.length === 0) {
           container.innerHTML = '<p style="color:var(--color-text-gray);font-size:14px;">Hali buyurtmalar yo\'q.</p>';
           return;
@@ -315,7 +303,7 @@
           return '<div class="order-item">' +
             '<div class="order-header">' +
               '<span class="order-id">#' + o.id + '</span>' +
-              '<span class="order-status ' + statusClass + '">' + o.status + '</span>' +
+              '<span class="order-status ' + statusClass + '">' + (o.status || '') + '</span>' +
             '</div>' +
             '<div class="order-date">' + (o.created_at ? new Date(o.created_at).toLocaleDateString('uz-UZ') : '') + '</div>' +
             '<div class="order-products">' + itemsHtml + '</div>' +
@@ -323,6 +311,7 @@
           '</div>';
         }).join('');
       } catch (err) {
+        container.innerHTML = '';
         errorEl.textContent = 'Buyurtmalarni yuklab bo\'lmadi.';
       }
     }
