@@ -225,9 +225,88 @@
       });
     }
 
-    function goToProduct(id) {
+    function openProduct(id) {
       if (!id) return;
-      window.location.href = '/product/' + id + '/';
+      var modal = document.getElementById('productModal');
+      if (!modal) return;
+
+      var imgEl = document.getElementById('productModalImg');
+      var catEl = document.getElementById('productModalCategory');
+      var nameEl = document.getElementById('productModalName');
+      var descEl = document.getElementById('productModalDesc');
+      var priceEl = document.getElementById('productModalPrice');
+      var orderBtn = document.getElementById('productModalOrder');
+      var likeBtn = document.getElementById('productLikeBtn');
+      var dislikeBtn = document.getElementById('productDislikeBtn');
+      var likeCount = document.getElementById('productLikeCount');
+      var dislikeCount = document.getElementById('productDislikeCount');
+      var stars = document.querySelectorAll('#productStars .star');
+      var starsLabel = document.getElementById('productStarsLabel');
+      var commentInput = document.getElementById('productCommentInput');
+      var commentsEl = document.getElementById('productComments');
+
+      currentProductId = id;
+
+      imgEl.src = '';
+      imgEl.alt = '';
+      catEl.textContent = '';
+      nameEl.textContent = 'Yuklanmoqda...';
+      descEl.textContent = '';
+      priceEl.textContent = '';
+      if (likeBtn) likeBtn.className = 'product-like';
+      if (dislikeBtn) dislikeBtn.className = 'product-dislike';
+      likeCount.textContent = '0';
+      dislikeCount.textContent = '0';
+      stars.forEach(function(s) { s.className = 'star'; });
+      starsLabel.textContent = 'Baha beriw';
+      commentInput.value = '';
+      commentsEl.innerHTML = '<p style="text-align:center;color:#999;font-size:13px;">Yuklanmoqda...</p>';
+
+      modal.classList.add('open');
+
+      apiGet('/menu/products/' + id + '/').then(function(p) {
+        nameEl.textContent = p.name || '';
+        catEl.textContent = p.category_name || '';
+        descEl.textContent = p.description || 'Ta\'rif mavjud emas.';
+        priceEl.textContent = p.price ? p.price + ' so\'m' : '';
+        imgEl.src = p.image || '';
+        imgEl.alt = p.name || '';
+        likeCount.textContent = p.likes_count || 0;
+        dislikeCount.textContent = p.dislikes_count || 0;
+
+        if (p.average_rating) {
+          stars.forEach(function(s) {
+            if (parseInt(s.getAttribute('data-value')) <= Math.round(p.average_rating)) {
+              s.className = 'star active';
+            }
+          });
+          starsLabel.textContent = 'O\'rtacha ' + p.average_rating + ' yulduz';
+        }
+
+        orderBtn.onclick = function() {
+          var msg = 'Salem! Men buyurtpa bermekishimen:\n\n' + (p.name || '') + ' - ' + (p.price || '') + '\n\nKategoriya: ' + (p.category_name || '') + '\n\nTelefon: +998912555309 yoki +998933350805';
+          window.open('https://wa.me/998912555309?text=' + encodeURIComponent(msg), '_blank');
+        };
+      }).catch(function() {
+        nameEl.textContent = 'Xatolik yuz berdi';
+        commentsEl.innerHTML = '<p style="text-align:center;color:#e74c3c;font-size:13px;">Mahsulot ma\'lumotlarini yuklashda xatolik.</p>';
+      });
+
+      apiGet('/menu/products/' + id + '/comments').then(function(comments) {
+        var arr = Array.isArray(comments) ? comments : [];
+        if (!arr.length) {
+          commentsEl.innerHTML = '<p style="text-align:center;color:#999;font-size:13px;">Hali izohlar yo\'q.</p>';
+          return;
+        }
+        commentsEl.innerHTML = arr.map(function(c) {
+          return '<div class="product-comment-item">' +
+            '<p style="font-size:12px;color:#999;">' + formatDateTime(c.created_at) + '</p>' +
+            '<p>' + escapeHtml(c.text) + '</p>' +
+          '</div>';
+        }).join('');
+      }).catch(function() {
+        commentsEl.innerHTML = '<p style="text-align:center;color:#999;font-size:13px;">Izohlarni yuklashda xatolik.</p>';
+      });
     }
 
     function renderProducts(products) {
@@ -241,7 +320,7 @@
         var imgUrl = p.image_big || p.image || '';
         var div = document.createElement('div');
         div.className = 'menu-item';
-        div.setAttribute('onclick', 'goToProduct(' + p.id + ')');
+        div.setAttribute('onclick', 'openProduct(' + p.id + ')');
 
         div.innerHTML =
           '<div class="menu-item__img-wrap"><img src="' + (imgUrl) + '" alt="' + (p.name || '') + '" loading="lazy" /></div>' +
@@ -321,81 +400,6 @@
 
     /* ===== PRODUCT DETAIL MODAL ===== */
     var currentProductId = null;
-
-    function openProduct(item) {
-      var modal = document.getElementById('productModal');
-      if (!modal) return;
-
-      var imgEl = document.getElementById('productModalImg');
-      var catEl = document.getElementById('productModalCategory');
-      var nameEl = document.getElementById('productModalName');
-      var descEl = document.getElementById('productModalDesc');
-      var priceEl = document.getElementById('productModalPrice');
-      var orderBtn = document.getElementById('productModalOrder');
-
-      var name = item.getAttribute('data-name') || '';
-      var price = item.getAttribute('data-price') || '';
-      var category = item.getAttribute('data-category') || '';
-      var desc = item.getAttribute('data-description') || 'Ta\'rif mavjud emas.';
-      var img = item.getAttribute('data-img') || '';
-      var id = item.getAttribute('data-id') || '';
-
-      currentProductId = id;
-
-      imgEl.src = img;
-      imgEl.alt = name;
-      catEl.textContent = category;
-      nameEl.textContent = name;
-      descEl.textContent = desc;
-      priceEl.textContent = price;
-
-      orderBtn.onclick = function() {
-        var msg = 'Salem! Men buyurtpa berejaqpan:\n\n' + name + ' - ' + price + '\n\nKategoriya: ' + category + '\n\nTelefon: +998912555309 yoki +998933350805';
-        window.open('https://wa.me/998912555309?text=' + encodeURIComponent(msg), '_blank');
-      };
-
-      document.getElementById('productLikeCount').textContent = '0';
-      document.getElementById('productDislikeCount').textContent = '0';
-      document.getElementById('productLikeBtn').className = 'product-like';
-      document.getElementById('productDislikeBtn').className = 'product-dislike';
-
-      var stars = document.querySelectorAll('.star');
-      stars.forEach(function(s) { s.className = 'star'; });
-      document.getElementById('productStarsLabel').textContent = 'Baha beriw';
-
-      document.getElementById('productCommentInput').value = '';
-      var commentsEl = document.getElementById('productComments');
-      commentsEl.innerHTML = '<p style="color:#999;font-size:13px;">Pikirler juklenbekte...</p>';
-
-      if (id) {
-        apiGet('/menu/products/' + id + '/comments').then(function(comments) {
-          commentsEl.innerHTML = '';
-          if (!comments || comments.length === 0) {
-            commentsEl.innerHTML = '<p style="color:#999;font-size:13px;">Hali izohlar yo\'q.</p>';
-            return;
-          }
-          comments.forEach(function(c) {
-            var div = document.createElement('div');
-            div.className = 'product-comment-item';
-            div.textContent = c.text || '';
-            var dateSpan = document.createElement('span');
-            dateSpan.style.display = 'block';
-            dateSpan.style.fontSize = '11px';
-            dateSpan.style.color = '#aaa';
-            dateSpan.style.marginTop = '4px';
-            dateSpan.textContent = c.created_at ? new Date(c.created_at).toLocaleDateString() : '';
-            div.appendChild(dateSpan);
-            commentsEl.appendChild(div);
-          });
-        }).catch(function() {
-          commentsEl.innerHTML = '<p style="color:#e74c3c;font-size:13px;">Izohlarni yuklashda xatolik.</p>';
-        });
-      } else {
-        commentsEl.innerHTML = '<p style="color:#999;font-size:13px;">Hali izohlar yo\'q.</p>';
-      }
-
-      modal.classList.add('open');
-    }
 
     (function() {
       var modal = document.getElementById('productModal');
