@@ -218,8 +218,9 @@
 
     function renderStars(rating, count) {
       var html = '';
+      var r = rating ? Math.round(rating) : 0;
       for (var i = 1; i <= 5; i++) {
-        html += '<span class="star' + (i <= Math.round(rating) ? '' : ' star--empty') + '">&#9733;</span>';
+        html += '<span class="star' + (i <= r ? '' : ' star--empty') + '">&#9733;</span>';
       }
       if (count !== undefined) {
         html += ' <span style="font-size:12px;color:var(--color-text-gray);">(' + count + ')</span>';
@@ -378,8 +379,6 @@
             '<p class="testi-card__text">' + escapeHtml(t.text) + '</p>' +
             '<div class="testi-card__meta">' +
               '<span>&#128197; ' + formatDateTime(t.created_at) + '</span>' +
-              '<span>&#128339; ' + escapeHtml(t.time || '') + '</span>' +
-              '<span>&#128065; ' + (t.views || 0) + '</span>' +
             '</div>' +
           '</div>';
         }).join('');
@@ -671,7 +670,6 @@
 
       dislikeBtn.addEventListener('click', function() {
         if (!currentProductId) return;
-        var isLike = likeBtn.classList.contains('active') ? false : true;
         var isDislike = !dislikeBtn.classList.contains('active');
         apiPost('/menu/products/' + currentProductId + '/like', { is_like: false }).then(function(res) {
           if (isDislike) {
@@ -719,7 +717,7 @@
         apiPost('/menu/products/' + currentProductId + '/comments', { text: text }).then(function(newComment) {
           var commentsEl = document.getElementById('productComments');
           var placeholder = commentsEl.querySelector('p');
-          if (placeholder && placeholder.textContent === 'Ele pikirler joq yo\'q.') {
+          if (placeholder && placeholder.textContent.indexOf('Hali izohlar') !== -1) {
             commentsEl.innerHTML = '';
           }
           var div = document.createElement('div');

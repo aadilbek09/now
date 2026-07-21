@@ -177,7 +177,8 @@ class ProductCommentListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         product = get_object_or_404(Product, pk=self.kwargs['pk'])
-        serializer.save(product=product)
+        user = self.request.user if self.request.user.is_authenticated else None
+        serializer.save(product=product, user=user)
 
 
 class ProductCommentDeleteView(generics.DestroyAPIView):

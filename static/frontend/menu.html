@@ -404,12 +404,58 @@
       if (closeBtn) closeBtn.addEventListener('click', function() { modal.classList.remove('open'); });
       if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('open'); });
 
+      var likeBtn = document.getElementById('productLikeBtn');
+      var dislikeBtn = document.getElementById('productDislikeBtn');
+
+      if (likeBtn) {
+        likeBtn.addEventListener('click', function() {
+          if (!currentProductId) return;
+          var isLike = !likeBtn.classList.contains('active');
+          apiPost('/menu/products/' + currentProductId + '/like', { is_like: isLike }).then(function(res) {
+            if (isLike) {
+              likeBtn.className = 'product-like active';
+              dislikeBtn.className = 'product-dislike';
+            } else {
+              likeBtn.className = 'product-like';
+            }
+            if (res && res.likes_count !== undefined) document.getElementById('productLikeCount').textContent = res.likes_count;
+            if (res && res.dislikes_count !== undefined) document.getElementById('productDislikeCount').textContent = res.dislikes_count;
+          }).catch(function() {
+            alert('Mahsulotlarni yoqtirish uchun tizimga kiring.');
+          });
+        });
+      }
+
+      if (dislikeBtn) {
+        dislikeBtn.addEventListener('click', function() {
+          if (!currentProductId) return;
+          var isDislike = !dislikeBtn.classList.contains('active');
+          apiPost('/menu/products/' + currentProductId + '/like', { is_like: false }).then(function(res) {
+            if (isDislike) {
+              dislikeBtn.className = 'product-dislike active';
+              likeBtn.className = 'product-like';
+            } else {
+              dislikeBtn.className = 'product-dislike';
+            }
+            if (res && res.likes_count !== undefined) document.getElementById('productLikeCount').textContent = res.likes_count;
+            if (res && res.dislikes_count !== undefined) document.getElementById('productDislikeCount').textContent = res.dislikes_count;
+          }).catch(function() {
+            alert('Mahsulotlarni yoqtirmaslik uchun tizimga kiring.');
+          });
+        });
+      }
+
       var stars = document.querySelectorAll('.star');
       stars.forEach(function(star) {
         star.addEventListener('click', function() {
+          if (!currentProductId) return;
           var val = parseInt(this.getAttribute('data-value'));
-          stars.forEach(function(s) { s.className = 'star' + (parseInt(s.getAttribute('data-value')) <= val ? ' active' : ''); });
-          document.getElementById('productStarsLabel').textContent = 'Siz ' + val + ' yulduz berdingiz';
+          apiPost('/menu/products/' + currentProductId + '/rate', { score: val }).then(function() {
+            stars.forEach(function(s) { s.className = 'star' + (parseInt(s.getAttribute('data-value')) <= val ? ' active' : ''); });
+            document.getElementById('productStarsLabel').textContent = 'Siz ' + val + ' yulduz berdingiz';
+          }).catch(function() {
+            alert('Baha beriw uchun tizimga kiring.');
+          });
         });
         star.addEventListener('mouseenter', function() {
           var val = parseInt(this.getAttribute('data-value'));
