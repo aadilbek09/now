@@ -20,6 +20,8 @@ class User(AbstractUser):
     )
     phone = models.CharField(max_length=20, blank=True, null=True)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)
+    bio = models.TextField(blank=True, default='')
 
     def __str__(self):
         return f"{self.username} ({self.role})"

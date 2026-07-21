@@ -9,6 +9,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .serializers import (
     AdminTokenObtainPairSerializer,
     EaturkishTokenObtainPairSerializer,
+    PublicProfileSerializer,
     RegisterSerializer,
     UserSerializer,
     UserUpdateSerializer,
@@ -106,6 +107,15 @@ class MeUpdateView(generics.UpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class PublicProfileView(generics.RetrieveAPIView):
+    """GET /accounts/profile/<username>/ — Boshqa foydalanuvchi profilini ko'rish."""
+
+    queryset = User.objects.all()
+    serializer_class = PublicProfileSerializer
+    permission_classes = [AllowAny]
+    lookup_field = 'username'
 
 
 class ChangePasswordView(APIView):

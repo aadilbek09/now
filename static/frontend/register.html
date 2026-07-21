@@ -1,11 +1,10 @@
 ﻿<!DOCTYPE html>
 <html lang="uz">
-
 <head>
   <meta charset="UTF-8" />
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dizimnen o'tw — Restaran</title>
+  <title>Ro'yxatdan o'tish — EATURKISH</title>
   <link rel="stylesheet" href="/static/frontend/globals.css" />
   <style>
     .register-page {
@@ -13,38 +12,41 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--color-bg-light);
+      background: linear-gradient(135deg, var(--color-bg-light) 0%, #f0f0f0 100%);
       padding: 20px;
     }
-
     .register-card {
       background: var(--color-white);
-      border-radius: 20px;
+      border-radius: 24px;
       padding: 48px 40px;
       width: 100%;
-      max-width: 420px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      max-width: 460px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.1);
       text-align: center;
     }
-
     .register-card__logo {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 800;
       color: var(--color-primary);
-      margin-bottom: 8px;
+      margin-bottom: 4px;
+      letter-spacing: -0.5px;
     }
-
     .register-card__sub {
       font-size: 14px;
       color: var(--color-text-gray);
-      margin-bottom: 32px;
+      margin-bottom: 10px;
     }
-
+    .register-card__divider {
+      width: 50px;
+      height: 3px;
+      background: var(--color-primary);
+      border-radius: 3px;
+      margin: 0 auto 28px;
+    }
     .register-card .form-group {
       text-align: left;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
-
     .register-card .form-group label {
       display: block;
       font-size: 13px;
@@ -52,152 +54,307 @@
       color: var(--color-text-dark);
       margin-bottom: 6px;
     }
-
+    .register-card .form-group label .required {
+      color: var(--color-primary);
+    }
     .register-card .form-group input {
       width: 100%;
-      padding: 12px 16px;
+      padding: 13px 16px;
       border: 1.5px solid var(--color-border);
-      border-radius: 10px;
+      border-radius: 12px;
       font-family: var(--font-family);
       font-size: 14px;
       outline: none;
-      transition: border-color 0.3s;
+      transition: all 0.3s;
       box-sizing: border-box;
+      background: var(--color-bg-light);
     }
-
     .register-card .form-group input:focus {
       border-color: var(--color-primary);
+      background: var(--color-white);
+      box-shadow: 0 0 0 3px rgba(185, 28, 60, 0.1);
     }
-
+    .register-card .form-group input::placeholder {
+      color: #aaa;
+    }
+    .register-card .input-row {
+      display: flex;
+      gap: 12px;
+    }
+    .register-card .input-row .form-group {
+      flex: 1;
+    }
     .register-card__btn {
       width: 100%;
       padding: 14px;
       background: var(--color-primary);
       color: var(--color-white);
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       font-family: var(--font-family);
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: all 0.3s;
       margin-top: 8px;
+      position: relative;
+      overflow: hidden;
     }
-
     .register-card__btn:hover {
       background: var(--color-primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(185, 28, 60, 0.3);
     }
-
+    .register-card__btn:active {
+      transform: translateY(0);
+    }
+    .register-card__btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
     .register-card__error {
       color: var(--color-primary);
       font-size: 13px;
-      margin-top: 16px;
+      margin-top: 14px;
       display: none;
+      background: #fef2f2;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #fecaca;
     }
-
     .register-card__error--visible {
       display: block;
     }
-
+    .register-card__success {
+      color: #16a34a;
+      font-size: 13px;
+      margin-top: 14px;
+      display: none;
+      background: #f0fdf4;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #bbf7d0;
+    }
+    .register-card__success--visible {
+      display: block;
+    }
+    .register-card__footer {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--color-border);
+    }
     .register-card__link {
-      display: inline-block;
-      margin-top: 20px;
       font-size: 13px;
       color: var(--color-text-gray);
-      transition: color 0.3s;
+      text-decoration: none;
+      transition: color 0.2s;
     }
-
     .register-card__link:hover {
-      color: var(--color-text-dark);
+      color: var(--color-primary);
+    }
+    .register-card__link strong {
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+    .register-card__benefits {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .register-card__benefit {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--color-text-gray);
+    }
+    .register-card__benefit span {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #dcfce7;
+      color: #16a34a;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    @media (max-width: 480px) {
+      .register-card { padding: 32px 20px; border-radius: 16px; }
+      .register-card .input-row { flex-direction: column; gap: 0; }
+      .register-card__logo { font-size: 26px; }
+      .register-card__benefits { gap: 12px; }
     }
   </style>
 </head>
-
 <body>
   <div class="register-page">
     <div class="register-card">
-      <div class="register-card__logo">Restaran</div>
-      <p class="register-card__sub">JAna paydalaniwshi jaratiw</p>
+      <div class="register-card__logo">EATURKISH</div>
+      <p class="register-card__sub">Yangi akunt yaratish</p>
+      <div class="register-card__divider"></div>
 
-      <form id="registerForm" onsubmit="handleRegister(event)">
+      <div class="register-card__benefits">
+        <div class="register-card__benefit">
+          <span>✓</span> Buyurtma berish
+        </div>
+        <div class="register-card__benefit">
+          <span>✓</span> Maxsus takliflar
+        </div>
+        <div class="register-card__benefit">
+          <span>✓</span> Tez yetkazish
+        </div>
+      </div>
+
+      <form id="registerForm">
         <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" placeholder="Username" required />
+          <label for="username">Username <span class="required">*</span></label>
+          <input type="text" id="username" placeholder="Username tanlang" required autocomplete="username" />
+        </div>
+        <div class="input-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="email@example.com" autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="phone">Telefon</label>
+            <input type="text" id="phone" placeholder="+998 90 123 45 67" autocomplete="tel" />
+          </div>
         </div>
         <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" placeholder="Email" />
+          <label for="password">Parol <span class="required">*</span></label>
+          <input type="password" id="password" placeholder="Kamida 6 belgi" required minlength="6" autocomplete="new-password" />
         </div>
         <div class="form-group">
-          <label for="phone">Telefon</label>
-          <input type="text" id="phone" placeholder="+998901234567" />
+          <label for="password2">Parolni takrorlang <span class="required">*</span></label>
+          <input type="password" id="password2" placeholder="Parolni qayta kiriting" required autocomplete="new-password" />
         </div>
-        <div class="form-group">
-          <label for="password">Parol</label>
-          <input type="password" id="password" placeholder="Kamida 6 belgi" required minlength="6" />
-        </div>
-        <div class="form-group">
-          <label for="password2">Paroldi takrarlan</label>
-          <input type="password" id="password2" placeholder="Parolni qayta kiriting" required />
-        </div>
-        <button type="submit" class="register-card__btn">Dizimnen o'tiw</button>
+
         <p class="register-card__error" id="registerError"></p>
+        <p class="register-card__success" id="registerSuccess"></p>
+
+        <button type="submit" class="register-card__btn" id="registerBtn">
+          <span id="btnText">Ro'yxatdan o'tish</span>
+          <span id="btnSpinner" style="display:none;">⏳</span>
+        </button>
       </form>
 
-      <a href="/login/" class="register-card__link">&larr; Akauntiniz barma? Kiriw</a>
+      <div class="register-card__footer">
+        <a href="/login/" class="register-card__link">
+          Akuntingiz bormi? <strong>Kirish</strong>
+        </a>
+        <br />
+        <a href="/" class="register-card__link" style="display:inline-block;margin-top:10px;">
+          &larr; Bosh sahifaga qaytish
+        </a>
+      </div>
     </div>
   </div>
 
   <script src="/static/frontend/api.js"></script>
   <script>
-    async function handleRegister(e) {
+    (function () {
+      var currentUser = getUser();
+      if (currentUser && getToken()) {
+        window.location.href = 'profile.html';
+      }
+    })();
+
+    document.getElementById('registerForm').addEventListener('submit', async function (e) {
       e.preventDefault();
+      var errorEl = document.getElementById('registerError');
+      var successEl = document.getElementById('registerSuccess');
+      var btn = document.getElementById('registerBtn');
+      var btnText = document.getElementById('btnText');
+      var btnSpinner = document.getElementById('btnSpinner');
+      errorEl.classList.remove('register-card__error--visible');
+      successEl.classList.remove('register-card__success--visible');
+
       var username = document.getElementById('username').value.trim();
       var email = document.getElementById('email').value.trim();
       var phone = document.getElementById('phone').value.trim();
       var password = document.getElementById('password').value;
       var password2 = document.getElementById('password2').value;
-      var errorEl = document.getElementById('registerError');
 
-      if (password !== password2) {
-        errorEl.textContent = 'Parollir mas emas!';
+      if (!username) {
+        errorEl.textContent = 'Iltimos, username kiriting.';
         errorEl.classList.add('register-card__error--visible');
         return;
       }
+      if (password.length < 6) {
+        errorEl.textContent = 'Parol kamida 6 belgidan iborat bo\'lishi kerak.';
+        errorEl.classList.add('register-card__error--visible');
+        return;
+      }
+      if (password !== password2) {
+        errorEl.textContent = 'Parollar bir-biriga mos emas!';
+        errorEl.classList.add('register-card__error--visible');
+        return;
+      }
+
+      btn.disabled = true;
+      btnText.textContent = 'Ro\'yxatdan o\'tish...';
+      btnSpinner.style.display = 'inline';
 
       try {
         var result = await apiPost('/accounts/auth/register', {
           username: username,
           email: email,
-          phone: phone,
           password: password,
-          password2: password2
+          password2: password2,
+          phone: phone
         });
-        var msg = 'DI\'zimenen o\'tdinz!';
-        if (result && result.user && result.user.username && result.user.username !== username) {
-          msg += '\n\nSizdin username: ' + result.user.username + '\n(Esletpe: siz kiritgen username band edi, avtomatik qo\'yildi)';
+
+        if (result && result.access && result.refresh) {
+          setTokens(result.access, result.refresh);
+          setUser(result.user);
+          successEl.textContent = '✅ Muvaffaqiyatli ro\'yxatdan o\'tdingiz! Profilga o\'tilmoqda...';
+          successEl.classList.add('register-card__success--visible');
+          setTimeout(function () {
+            window.location.href = 'profile.html';
+          }, 1200);
         } else {
-          msg += '\n\nUsername: ' + (result && result.user ? result.user.username : username);
+          successEl.textContent = '✅ Ro\'yxatdan o\'tdingiz! Login sahifasiga o\'tilmoqda...';
+          successEl.classList.add('register-card__success--visible');
+          setTimeout(function () {
+            window.location.href = 'login.html';
+          }, 1500);
         }
-        alert(msg);
-        window.location.href = 'login.html';
       } catch (err) {
+        btn.disabled = false;
+        btnText.textContent = 'Ro\'yxatdan o\'tish';
+        btnSpinner.style.display = 'none';
+
         if (err && err.json) {
           err.json().then(function (data) {
-            var msg = JSON.stringify(data);
-            errorEl.textContent = msg;
+            var msgs = [];
+            for (var k in data) {
+              var val = data[k];
+              if (Array.isArray(val)) {
+                msgs.push(val.join(', '));
+              } else if (typeof val === 'string') {
+                msgs.push(val);
+              } else {
+                msgs.push(String(val));
+              }
+            }
+            errorEl.textContent = msgs.join(' | ');
             errorEl.classList.add('register-card__error--visible');
           }).catch(function () {
-            errorEl.textContent = 'Di\'mnen o\'tiwde qatelik juz berdi';
+            errorEl.textContent = 'Ro\'yxatdan o\'tishda xatolik yuz berdi.';
             errorEl.classList.add('register-card__error--visible');
           });
         } else {
-          errorEl.textContent = err.message || 'Di\'zimnen o\'tiwde qatelik juz berdi';
+          errorEl.textContent = err.message || 'Ro\'yxatdan o\'tishda xatolik yuz berdi.';
           errorEl.classList.add('register-card__error--visible');
         }
       }
-    }
+    });
   </script>
 </body>
-
 </html>

@@ -37,7 +37,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'phone', 'role', 'date_joined', 'avatar')
+        fields = ('id', 'username', 'email', 'phone', 'role', 'date_joined', 'avatar', 'cover_image', 'bio')
         read_only_fields = fields
 
 
@@ -46,7 +46,16 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'phone', 'avatar')
+        fields = ('username', 'email', 'phone', 'avatar', 'cover_image', 'bio')
+
+
+class PublicProfileSerializer(serializers.ModelSerializer):
+    """Boshqa foydalanuvchilarning profilini ko'rish uchun."""
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'avatar', 'cover_image', 'bio', 'date_joined')
+        read_only_fields = fields
 
 
 class EaturkishTokenObtainPairSerializer(TokenObtainPairSerializer):

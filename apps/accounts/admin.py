@@ -9,7 +9,7 @@ class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'phone', 'role', 'is_staff', 'is_active')
     list_filter = ('role', 'is_staff', 'is_active')
     fieldsets = UserAdmin.fieldsets + (
-        ("Qo'shimcha ma'lumot", {'fields': ('role', 'phone')}),
+        ("Qo'shimcha ma'lumot", {'fields': ('role', 'phone', 'avatar', 'cover_image', 'bio')}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
         ("Qo'shimcha ma'lumot", {'fields': ('role', 'phone', 'email')}),
