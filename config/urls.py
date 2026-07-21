@@ -38,13 +38,13 @@ urlpatterns = [
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 
+    path("", include("apps.core.urls")),
     path("accounts/", include("apps.accounts.urls")),
     path("contact/", include("apps.contact.urls")),
     path("menu/", include("apps.menu.urls")),
     path("news/", include("apps.news.urls")),
     path("orders/", include("apps.orders.urls")),
     path("core/", include("apps.core.urls")),
-    path("", include("apps.core.urls")),
 ]
 
 urlpatterns += [
