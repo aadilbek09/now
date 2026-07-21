@@ -199,6 +199,11 @@
       });
     }
 
+    function goToProduct(id) {
+      if (!id) return;
+      window.location.href = '/product/' + id + '/';
+    }
+
     function renderProducts(products) {
       var grid = document.getElementById('menuGrid');
       grid.innerHTML = '';
@@ -210,13 +215,8 @@
         var imgUrl = p.image_big || p.image || '';
         var div = document.createElement('div');
         div.className = 'menu-item';
-        div.setAttribute('onclick', 'openProduct(this)');
-        div.setAttribute('data-id', p.id);
-        div.setAttribute('data-category', p.category_name || '');
-        div.setAttribute('data-name', p.name);
-        div.setAttribute('data-price', p.price + ' so\'m');
-        div.setAttribute('data-description', p.description || 'Ta\'rif mavjud emas.');
-        div.setAttribute('data-img', imgUrl);
+        div.setAttribute('onclick', 'goToProduct(' + p.id + ')');
+
         div.innerHTML =
           '<div class="menu-item__img-wrap"><img src="' + (imgUrl) + '" alt="' + (p.name || '') + '" loading="lazy" /></div>' +
           '<p class="menu-item__name">' + (p.name || '') + '</p>' +

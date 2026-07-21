@@ -2,8 +2,6 @@ __pycache__/
 *.pyc
 *.pyo
 .env
-db.sqlite3
-db.sqlite3-journal
 *.egg-info/
 dist/
 build/

@@ -256,18 +256,12 @@
           return;
         }
         grid.innerHTML = products.map(function(p) {
-          return '<div class="dish-card" onclick="goToProduct(getProductId(this))" ' +
-            'data-id="' + p.id + '" ' +
-            'data-category="' + escapeHtml(p.category_name || '') + '" ' +
-            'data-name="' + escapeHtml(p.name) + '" ' +
-            'data-price="' + p.price + ' so\'m" ' +
-            'data-description="' + escapeHtml(p.description || '') + '" ' +
-            'data-img="' + (p.image_big || p.image || '') + '">' +
+          return '<div class="dish-card" onclick="goToProduct(' + p.id + ')">' +
             '<div class="dish-card__img-wrap"><img src="' + (p.image || '') + '" alt="' + escapeHtml(p.name) + '" loading="lazy" /></div>' +
             '<p class="dish-card__name">' + escapeHtml(p.name) + '</p>' +
             '<div class="dish-card__stars">' + renderStars(p.average_rating, p.ratings_count) + '</div>' +
             '<span class="dish-card__price">' + p.price + ' so\'m</span>' +
-            '<button type="button" class="dish-card__btn" onclick="event.stopPropagation(); goToProduct(getProductId(this.closest(\'.dish-card\')))">Batafsil</button>' +
+            '' +
           '</div>';
         }).join('');
       }).catch(function() {
@@ -291,13 +285,7 @@
           return;
         }
         grid.innerHTML = filtered.map(function(p) {
-          return '<div class="mp-card" onclick="goToProduct(getProductId(this))" ' +
-            'data-id="' + p.id + '" ' +
-            'data-category="' + escapeHtml(p.category_name || '') + '" ' +
-            'data-name="' + escapeHtml(p.name) + '" ' +
-            'data-price="' + p.price + ' so\'m" ' +
-            'data-description="' + escapeHtml(p.description || '') + '" ' +
-            'data-img="' + (p.image_big || p.image || '') + '">' +
+          return '<div class="mp-card" onclick="goToProduct(' + p.id + ')">' +
             '<div class="mp-card__img-wrap"><img src="' + (p.image || '') + '" alt="' + escapeHtml(p.name) + '" loading="lazy" /></div>' +
             '<p class="mp-card__name">' + escapeHtml(p.name) + '</p>' +
             '<span class="mp-card__price">' + p.price + ' so\'m</span>' +
@@ -329,13 +317,7 @@
                   return;
                 }
                 grid.innerHTML = items.map(function(p) {
-                  return '<div class="mp-card" onclick="goToProduct(getProductId(this))" ' +
-                    'data-id="' + p.id + '" ' +
-                    'data-category="' + escapeHtml(p.category_name || '') + '" ' +
-                    'data-name="' + escapeHtml(p.name) + '" ' +
-                    'data-price="' + p.price + ' so\'m" ' +
-                    'data-description="' + escapeHtml(p.description || '') + '" ' +
-                    'data-img="' + (p.image_big || p.image || '') + '">' +
+                   return '<div class="mp-card" onclick="goToProduct(' + p.id + ')">' +
                     '<div class="mp-card__img-wrap"><img src="' + (p.image || '') + '" alt="' + escapeHtml(p.name) + '" loading="lazy" /></div>' +
                     '<p class="mp-card__name">' + escapeHtml(p.name) + '</p>' +
                     '<span class="mp-card__price">' + p.price + ' so\'m</span>' +
