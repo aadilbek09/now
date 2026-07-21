@@ -742,6 +742,13 @@ img[loading="lazy"] {
   font-weight: 600;
 }
 
+.modal__error {
+  color: var(--color-primary);
+  font-size: 13px;
+  text-align: center;
+  margin: 0;
+}
+
 /* ===== HAMBURGER MENU ===== */
 .hamburger {
   display: none;

@@ -100,6 +100,10 @@ class MeUpdateView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     http_method_names = ['put', 'patch']
 
+    def get_parsers(self):
+        from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
+        return [JSONParser(), MultiPartParser(), FormParser()]
+
     def get_object(self):
         return self.request.user
 

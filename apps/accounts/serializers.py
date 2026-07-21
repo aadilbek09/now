@@ -37,7 +37,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'phone', 'role', 'date_joined')
+        fields = ('id', 'username', 'email', 'phone', 'role', 'date_joined', 'avatar')
         read_only_fields = fields
 
 
@@ -46,7 +46,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'phone')
+        fields = ('username', 'email', 'phone', 'avatar')
 
 
 class EaturkishTokenObtainPairSerializer(TokenObtainPairSerializer):
