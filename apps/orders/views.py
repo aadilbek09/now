@@ -1,14 +1,72 @@
 from django.db.models import Count, DecimalField, Sum, Value
 from django.db.models.functions import Coalesce, TruncDate
 from rest_framework import generics, status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 
 from apps.accounts.permissions import IsAdminRole
-from .models import Order, OrderItem
-from .serializers import OrderCreateSerializer, OrderSerializer
+from .models import Cart, CartItem, Order, OrderItem
+from .serializers import (
+    CartAddItemSerializer,
+    CartSerializer,
+    OrderCreateSerializer,
+    OrderSerializer,
+)
+
+
+class CartDetailView(APIView):
+    """GET /api/cart — Joriy foydalanuvchining savatchasini olish."""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        return Response(CartSerializer(cart).data)
+
+
+class CartAddItemView(APIView):
+    """POST /api/cart/add — Savatchaga mahsulot qo'shish."""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = CartAddItemSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        item, created = CartItem.objects.get_or_create(
+            cart=cart,
+            product_id=serializer.validated_data['product_id'],
+            defaults={'quantity': serializer.validated_data['quantity']}
+        )
+        if not created:
+            item.quantity += serializer.validated_data['quantity']
+            item.save()
+        return Response(CartSerializer(cart).data)
+
+
+class CartUpdateItemView(APIView):
+    """PATCH /api/cart/item/<pk> — Savatchadagi mahsulot miqdorini o'zgartirish."""
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, pk):
+        cart = get_object_or_404(Cart, user=request.user)
+        item = get_object_or_404(CartItem, id=pk, cart=cart)
+        quantity = request.data.get('quantity')
+        if quantity is not None and int(quantity) > 0:
+            item.quantity = int(quantity)
+            item.save()
+        return Response(CartSerializer(cart).data)
+
+
+class CartRemoveItemView(APIView):
+    """DELETE /api/cart/item/<pk> — Savatchadan mahsulotni olib tashlash."""
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        cart = get_object_or_404(Cart, user=request.user)
+        item = get_object_or_404(CartItem, id=pk, cart=cart)
+        item.delete()
+        return Response(CartSerializer(cart).data)
 
 
 class OrderCreateView(generics.CreateAPIView):
@@ -17,6 +75,13 @@ class OrderCreateView(generics.CreateAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderCreateSerializer
     permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+        order = serializer.save()
+        if self.request.user.is_authenticated:
+            order.user = self.request.user
+            order.save(update_fields=['user'])
+            Cart.objects.filter(user=self.request.user).delete()
 
 
 class AdminOrderListView(generics.ListAPIView):
@@ -166,3 +231,12 @@ class AdminDashboardStatsView(APIView):
             'total_customers': total_customers,
             'avg_rating': avg_rating,
         })
+
+
+class UserOrderListView(generics.ListAPIView):
+    """GET /api/orders/my — Joriy foydalanuvchining buyurtmalari."""
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).prefetch_related('items', 'items__product').order_by('-created_at')

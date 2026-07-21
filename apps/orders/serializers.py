@@ -2,7 +2,46 @@ from django.db import transaction
 from rest_framework import serializers
 
 from apps.menu.models import Product
-from .models import Order, OrderItem
+from .models import Cart, CartItem, Order, OrderItem
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    product_name = serializers.CharField(source='product.name', read_only=True)
+    product_image = serializers.ImageField(source='product.image', read_only=True)
+    product_price = serializers.SerializerMethodField()
+    subtotal = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CartItem
+        fields = ('id', 'product', 'product_name', 'product_image', 'product_price', 'quantity', 'subtotal')
+
+    def get_product_price(self, obj):
+        return float(obj.product.price)
+
+    def get_subtotal(self, obj):
+        return float(obj.subtotal)
+
+
+class CartAddItemSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField()
+    quantity = serializers.IntegerField(min_value=1, default=1)
+
+    def validate_product_id(self, value):
+        if not Product.objects.filter(id=value, is_active=True).exists():
+            raise serializers.ValidationError("Bunday faol mahsulot topilmadi.")
+        return value
+
+
+class CartSerializer(serializers.ModelSerializer):
+    items = CartItemSerializer(many=True, read_only=True)
+    total = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Cart
+        fields = ('id', 'items', 'total', 'created_at', 'updated_at')
+
+    def get_total(self, obj):
+        return float(obj.total())
 
 
 class OrderItemCreateSerializer(serializers.Serializer):

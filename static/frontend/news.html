@@ -59,24 +59,22 @@
           <button class="product-modal-order" id="productModalOrder">Buyurtpa beriw</button>
           <p style="font-size:12px;color:var(--color-text-gray);margin-top:8px;text-align:center;">&#128222; +998912555309 / +998933350805</p>
 
-          <div id="productModalExtra">
-            <div class="product-modal-divider"></div>
-            <div class="product-actions">
-              <button class="product-like" id="productLikeBtn">&#128077; <span id="productLikeCount">0</span></button>
-              <button class="product-dislike" id="productDislikeBtn">&#128078; <span id="productDislikeCount">0</span></button>
-            </div>
-            <div class="product-stars" id="productStars">
-              <span class="star" data-value="1">&#9734;</span>
-              <span class="star" data-value="2">&#9734;</span>
-              <span class="star" data-value="3">&#9734;</span>
-              <span class="star" data-value="4">&#9734;</span>
-              <span class="star" data-value="5">&#9734;</span>
-            </div>
-            <p class="product-stars-label" id="productStarsLabel">Baha beriw</p>
-            <textarea class="product-comment-input" id="productCommentInput" placeholder="Izoh qoldirish..." rows="3"></textarea>
-            <button class="product-comment-btn" id="productCommentBtn">Pikir qaldiriw</button>
-            <div class="product-comments" id="productComments"></div>
+          <div class="product-modal-divider"></div>
+          <div class="product-actions">
+            <button class="product-like" id="productLikeBtn">&#128077; <span id="productLikeCount">0</span></button>
+            <button class="product-dislike" id="productDislikeBtn">&#128078; <span id="productDislikeCount">0</span></button>
           </div>
+          <div class="product-stars" id="productStars">
+            <span class="star" data-value="1">&#9734;</span>
+            <span class="star" data-value="2">&#9734;</span>
+            <span class="star" data-value="3">&#9734;</span>
+            <span class="star" data-value="4">&#9734;</span>
+            <span class="star" data-value="5">&#9734;</span>
+          </div>
+          <p class="product-stars-label" id="productStarsLabel">Baha beriw</p>
+          <textarea class="product-comment-input" id="productCommentInput" placeholder="Izoh qoldirish..." rows="3"></textarea>
+          <button class="product-comment-btn" id="productCommentBtn">Pikir qaldiriw</button>
+          <div class="product-comments" id="productComments"></div>
         </div>
       </div>
     </div>
@@ -167,6 +165,14 @@
       modalOverlay.addEventListener('click', function(e) { if (e.target === modalOverlay) modalOverlay.classList.remove('open'); });
     }
 
+    /* ===== UTILITIES ===== */
+    function escapeHtml(str) {
+      if (!str) return '';
+      var div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
     /* ===== NEWS ===== */
     var newsGrid = document.getElementById('newsGrid');
     var viewMoreBtn = document.querySelector('.news-page__btn');
@@ -185,12 +191,12 @@
         var card = document.createElement('div');
         card.className = 'news-card';
         card.innerHTML =
-          '<div class="news-card__img-wrap"><img src="' + (post.image || '') + '" alt="' + (post.title || '') + '" loading="lazy" /></div>' +
+          '<div class="news-card__img-wrap"><img src="' + (post.image || '') + '" alt="' + escapeHtml(post.title) + '" loading="lazy" /></div>' +
           '<div class="news-card__body">' +
-            '<p class="news-card__title">' + (post.title || '') + '</p>' +
-            '<p class="news-card__desc">' + (post.desc || '') + '</p>' +
+            '<p class="news-card__title">' + escapeHtml(post.title) + '</p>' +
+            '<p class="news-card__desc">' + escapeHtml(post.desc) + '</p>' +
             '<div class="news-card__footer">' +
-              '<a href="javascript:void(0)" class="news-card__link" data-id="' + post.id + '" onclick="openNewsModal(' + post.id + ')">Batafsil</a>' +
+              '<a href="#" class="news-card__link" data-id="' + post.id + '">Ko\'rish</a>' +
               '<span class="news-card__date">' + formatDate(post.created_at) + '</span>' +
             '</div>' +
           '</div>';
@@ -268,80 +274,118 @@
 
     /* ===== PRODUCT DETAIL MODAL ===== */
     var currentProductId = null;
-    var productData = {};
 
-    function openNewsModal(id) {
+    function openProduct(item) {
       var modal = document.getElementById('productModal');
       if (!modal) return;
 
-      var imgEl = document.getElementById('productModalImg');
-      var catEl = document.getElementById('productModalCategory');
-      var nameEl = document.getElementById('productModalName');
-      var descEl = document.getElementById('productModalDesc');
-      var priceEl = document.getElementById('productModalPrice');
-      var orderBtn = document.getElementById('productModalOrder');
+      currentProductId = item.getAttribute('data-id');
+      if (!currentProductId) {
+        var link = item.querySelector('.news-card__link');
+        if (link) currentProductId = link.getAttribute('data-id');
+      }
 
-      apiGet('/news/posts/' + id).then(function(post) {
-        var extra = document.getElementById('productModalExtra');
-        if (extra) extra.style.display = 'none';
-        imgEl.src = post.image || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80';
-        imgEl.alt = post.title || '';
-        catEl.textContent = post.category || 'Yangilik';
-        nameEl.textContent = post.title || '';
-        descEl.textContent = post.content || post.desc || 'Ta\'rif mavjud emas.';
-        priceEl.textContent = '';
+      var name = item.getAttribute('data-name') || (item.querySelector('.news-card__title, .menu-item__name, .mp-card__name') || {}).textContent || '';
+      var price = item.getAttribute('data-price') || '';
+      var category = item.getAttribute('data-category') || '';
+      var desc = item.getAttribute('data-description') || 'Ta\'rif mavjud emas.';
+      var img = item.getAttribute('data-img') || (item.querySelector('img') || {}).src || '';
 
-        orderBtn.onclick = function() {
-          var msg = 'Salem! Men ushbu yangilik/comment haqida ko\'proq bilmoqchiman:\n\n' + (post.title || '') + '\n\nTelefon: +998912555309 yoki +998933350805';
-          window.open('https://wa.me/998912555309?text=' + encodeURIComponent(msg), '_blank');
-        };
+      document.getElementById('productModalImg').src = img;
+      document.getElementById('productModalImg').alt = name;
+      document.getElementById('productModalCategory').textContent = category;
+      document.getElementById('productModalName').textContent = name;
+      document.getElementById('productModalDesc').textContent = desc;
+      document.getElementById('productModalPrice').textContent = price;
 
-        modal.classList.add('open');
-      }).catch(function() {
-        alert('Yangilikni yuklashda xatolik.');
-      });
+      document.getElementById('productModalOrder').onclick = function() {
+        var msg = 'Salem! Men buyurtpa berjaqpan:\n\n' + name + ' - ' + price + '\n\nKategoriya: ' + category + '\n\nTelefon: +998912555309 yoki +998933350805';
+        window.open('https://wa.me/998912555309?text=' + encodeURIComponent(msg), '_blank');
+      };
+
+      document.getElementById('productLikeBtn').className = 'product-like';
+      document.getElementById('productDislikeBtn').className = 'product-dislike';
+      document.getElementById('productLikeCount').textContent = '0';
+      document.getElementById('productDislikeCount').textContent = '0';
+      var stars = document.querySelectorAll('#productStars .star');
+      stars.forEach(function(s) { s.className = 'star'; });
+      document.getElementById('productStarsLabel').textContent = 'Baho berish';
+      document.getElementById('productCommentInput').value = '';
+      document.getElementById('productComments').innerHTML = '<p style="color:#999;font-size:13px;">Izohlar yuklanmoqda...</p>';
+
+      if (currentProductId) {
+        apiGet('/menu/products/' + currentProductId).then(function(p) {
+          if (p.average_rating) {
+            stars.forEach(function(s) { s.className = 'star' + (parseInt(s.getAttribute('data-value')) <= Math.round(p.average_rating) ? ' active' : ''); });
+          }
+          document.getElementById('productLikeCount').textContent = p.likes_count || 0;
+          document.getElementById('productDislikeCount').textContent = p.dislikes_count || 0;
+        }).catch(function() {});
+
+        apiGet('/menu/products/' + currentProductId + '/rating').then(function(data) {
+          if (data && data.score) {
+            stars.forEach(function(s) { s.className = 'star' + (parseInt(s.getAttribute('data-value')) <= data.score ? ' active' : ''); });
+            document.getElementById('productStarsLabel').textContent = 'Siz ' + data.score + ' yulduz berdingiz';
+          }
+          if (data && data.likes_count !== undefined) {
+            document.getElementById('productLikeCount').textContent = data.likes_count;
+            document.getElementById('productDislikeCount').textContent = data.dislikes_count;
+          }
+        }).catch(function() {});
+
+        apiGet('/menu/products/' + currentProductId + '/comments').then(function(comments) {
+          var el = document.getElementById('productComments');
+          var arr = Array.isArray(comments) ? comments : [];
+          if (!arr.length) { el.innerHTML = '<p style="color:#999;font-size:13px;">Hali izohlar yo\'q.</p>'; return; }
+          el.innerHTML = arr.map(function(c) {
+            return '<div class="product-comment-item"><p style="font-size:12px;color:#999;">' + (c.created_at ? new Date(c.created_at).toLocaleDateString() : '') + '</p><p>' + (c.text || '') + '</p></div>';
+          }).join('');
+        }).catch(function() {
+          document.getElementById('productComments').innerHTML = '<p style="color:#999;font-size:13px;">Izohlarni yuklashda xatolik.</p>';
+        });
+      }
+
+      modal.classList.add('open');
     }
 
     (function() {
       var modal = document.getElementById('productModal');
       var closeBtn = document.getElementById('productModalClose');
-
       if (closeBtn) closeBtn.addEventListener('click', function() { modal.classList.remove('open'); });
       if (modal) modal.addEventListener('click', function(e) { if (e.target === modal) modal.classList.remove('open'); });
 
-      var likeBtn = document.getElementById('productLikeBtn');
-      var dislikeBtn = document.getElementById('productDislikeBtn');
+      function updateLikeUI(res) {
+        if (res && res.likes_count !== undefined) document.getElementById('productLikeCount').textContent = res.likes_count;
+        if (res && res.dislikes_count !== undefined) document.getElementById('productDislikeCount').textContent = res.dislikes_count;
+      }
 
-      likeBtn.addEventListener('click', function() {
-        var data = productData[currentProductId];
-        if (!data) return;
-        if (data.liked) { data.liked = false; data.likeCount = Math.max(0, (data.likeCount || 0) - 1); }
-        else { data.liked = true; data.likeCount = (data.likeCount || 0) + 1; if (data.disliked) { data.disliked = false; data.dislikeCount = Math.max(0, (data.dislikeCount || 0) - 1); } }
-        this.className = 'product-like' + (data.liked ? ' active' : '');
-        document.getElementById('productDislikeBtn').className = 'product-dislike' + (data.disliked ? ' active' : '');
-        document.getElementById('productLikeCount').textContent = data.likeCount || 0;
-        document.getElementById('productDislikeCount').textContent = data.dislikeCount || 0;
+      document.getElementById('productLikeBtn').addEventListener('click', function() {
+        if (!currentProductId) return;
+        apiPost('/menu/products/' + currentProductId + '/like', { is_like: true }).then(function(res) {
+          this.classList.toggle('active');
+          document.getElementById('productDislikeBtn').classList.remove('active');
+          updateLikeUI(res);
+        }.bind(this)).catch(function() { alert('Tizimga kiring.'); });
       });
 
-      dislikeBtn.addEventListener('click', function() {
-        var data = productData[currentProductId];
-        if (!data) return;
-        if (data.disliked) { data.disliked = false; data.dislikeCount = Math.max(0, (data.dislikeCount || 0) - 1); }
-        else { data.disliked = true; data.dislikeCount = (data.dislikeCount || 0) + 1; if (data.liked) { data.liked = false; data.likeCount = Math.max(0, (data.likeCount || 0) - 1); } }
-        this.className = 'product-dislike' + (data.disliked ? ' active' : '');
-        document.getElementById('productLikeBtn').className = 'product-like' + (data.liked ? ' active' : '');
-        document.getElementById('productLikeCount').textContent = data.likeCount || 0;
-        document.getElementById('productDislikeCount').textContent = data.dislikeCount || 0;
+      document.getElementById('productDislikeBtn').addEventListener('click', function() {
+        if (!currentProductId) return;
+        apiPost('/menu/products/' + currentProductId + '/like', { is_like: false }).then(function(res) {
+          this.classList.toggle('active');
+          document.getElementById('productLikeBtn').classList.remove('active');
+          updateLikeUI(res);
+        }.bind(this)).catch(function() { alert('Tizimga kiring.'); });
       });
 
-      var stars = document.querySelectorAll('.star');
+      var stars = document.querySelectorAll('#productStars .star');
       stars.forEach(function(star) {
         star.addEventListener('click', function() {
-          var data = productData[currentProductId];
-          if (!data) return;
-          data.rating = parseInt(this.getAttribute('data-value'));
-          stars.forEach(function(s) { s.className = 'star' + (parseInt(s.getAttribute('data-value')) <= data.rating ? ' active' : ''); });
-          document.getElementById('productStarsLabel').textContent = 'Siz ' + data.rating + ' juldiz berdiniz';
+          if (!currentProductId) return;
+          var val = parseInt(this.getAttribute('data-value'));
+          apiPost('/menu/products/' + currentProductId + '/rate', { score: val }).then(function() {
+            stars.forEach(function(s) { s.className = 'star' + (parseInt(s.getAttribute('data-value')) <= val ? ' active' : ''); });
+            document.getElementById('productStarsLabel').textContent = 'Siz ' + val + ' yulduz berdingiz';
+          }).catch(function() { alert('Baho berish uchun tizimga kiring.'); });
         });
         star.addEventListener('mouseenter', function() {
           var val = parseInt(this.getAttribute('data-value'));
@@ -352,28 +396,27 @@
         });
       });
 
-      var commentBtn = document.getElementById('productCommentBtn');
-      var commentInput = document.getElementById('productCommentInput');
-
-      commentBtn.addEventListener('click', function() {
-        var text = commentInput.value.trim();
+      document.getElementById('productCommentBtn').addEventListener('click', function() {
+        var input = document.getElementById('productCommentInput');
+        var text = input.value.trim();
         if (!text || !currentProductId) return;
-        var data = productData[currentProductId];
-        if (!data) return;
-        data.comments.push(text);
-        var div = document.createElement('div');
-        div.className = 'product-comment-item';
-        div.textContent = text;
-        document.getElementById('productComments').appendChild(div);
-        commentInput.value = '';
+        apiPost('/menu/products/' + currentProductId + '/comments', { text: text }).then(function() {
+          var el = document.getElementById('productComments');
+          var noMsg = el.querySelector('p');
+          if (noMsg && noMsg.textContent.indexOf('Hali izohlar') !== -1) el.innerHTML = '';
+          var div = document.createElement('div');
+          div.className = 'product-comment-item';
+          div.innerHTML = '<p style="font-size:12px;color:#999;">Hozirgina</p><p>' + text + '</p>';
+          el.appendChild(div);
+          input.value = '';
+        }).catch(function() { alert('Izoh yuborishda xatolik.'); });
       });
 
-      commentInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commentBtn.click(); }
+      document.getElementById('productCommentInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); document.getElementById('productCommentBtn').click(); }
       });
     })();
   </script>
 
 </body>
 </html>
-

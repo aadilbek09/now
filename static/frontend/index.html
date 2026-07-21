@@ -21,10 +21,9 @@
       <a href="/menu/">Menyu</a>
       <a href="/news/">Janaliqlar</a>
       <a href="/about/">Biz haqimizda</a>
-          <a href="/contact/">Biz benen bag'laniw</a>
-          <a href="/profile/">Profilim</a>
-        </nav>
-        <a href="/login/" class="header__login" id="headerLogin">Kiriw</a>
+      <a href="/contact/">Biz benen bag'laniw</a>
+    </nav>
+    <a href="/login/" class="header__login">Kiriw</a>
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -203,16 +202,6 @@
 
   <script src="/static/frontend/api.js"></script>
   <script>
-    function getProductId(el) {
-      if (!el) return null;
-      return el.getAttribute('data-id');
-    }
-
-    function goToProduct(id) {
-      if (!id) return;
-      window.location.href = '/product/' + id + '/';
-    }
-
     /* ===== UTILITIES ===== */
     function formatDate(dateStr) {
       if (!dateStr) return '';
@@ -245,6 +234,11 @@
       return div.innerHTML;
     }
 
+    function goToProduct(id) {
+      if (!id) return;
+      window.location.href = '/product/' + id + '/';
+    }
+
     /* ===== POPULAR DISHES ===== */
     (function() {
       var grid = document.getElementById('dishesGrid');
@@ -261,7 +255,6 @@
             '<p class="dish-card__name">' + escapeHtml(p.name) + '</p>' +
             '<div class="dish-card__stars">' + renderStars(p.average_rating, p.ratings_count) + '</div>' +
             '<span class="dish-card__price">' + p.price + ' so\'m</span>' +
-            '' +
           '</div>';
         }).join('');
       }).catch(function() {
@@ -317,7 +310,7 @@
                   return;
                 }
                 grid.innerHTML = items.map(function(p) {
-                   return '<div class="mp-card" onclick="goToProduct(' + p.id + ')">' +
+                  return '<div class="mp-card" onclick="goToProduct(' + p.id + ')">' +
                     '<div class="mp-card__img-wrap"><img src="' + (p.image || '') + '" alt="' + escapeHtml(p.name) + '" loading="lazy" /></div>' +
                     '<p class="mp-card__name">' + escapeHtml(p.name) + '</p>' +
                     '<span class="mp-card__price">' + p.price + ' so\'m</span>' +
@@ -580,6 +573,75 @@
       }).catch(function() {});
     })();
 
+    /* ===== PRODUCT DETAIL MODAL ===== */
+    var currentProductId = null;
+
+    function openProduct(item) {
+      var modal = document.getElementById('productModal');
+      if (!modal) return;
+
+      var imgEl = document.getElementById('productModalImg');
+      var catEl = document.getElementById('productModalCategory');
+      var nameEl = document.getElementById('productModalName');
+      var descEl = document.getElementById('productModalDesc');
+      var priceEl = document.getElementById('productModalPrice');
+      var orderBtn = document.getElementById('productModalOrder');
+
+      var id = item.getAttribute('data-id');
+      var name = item.getAttribute('data-name') || '';
+      var price = item.getAttribute('data-price') || '';
+      var category = item.getAttribute('data-category') || '';
+      var desc = item.getAttribute('data-description') || 'Ta\'rif mavjud emas.';
+      var img = item.getAttribute('data-img') || (item.querySelector('img') ? item.querySelector('img').src : '');
+
+      currentProductId = id;
+
+      imgEl.src = img;
+      imgEl.alt = name;
+      catEl.textContent = category;
+      nameEl.textContent = name;
+      descEl.textContent = desc;
+      priceEl.textContent = price;
+
+      orderBtn.onclick = function() {
+        var msg = 'Salem! Men buyurtpa bermekishimen:\n\n' + name + ' - ' + price + '\n\nKategoriya: ' + category + '\n\nTelefon: +998912555309 yoki +998933350805';
+        window.open('https://wa.me/998912555309?text=' + encodeURIComponent(msg), '_blank');
+      };
+
+      document.getElementById('productLikeBtn').className = 'product-like';
+      document.getElementById('productDislikeBtn').className = 'product-dislike';
+      document.getElementById('productLikeCount').textContent = '0';
+      document.getElementById('productDislikeCount').textContent = '0';
+
+      var stars = document.querySelectorAll('#productStars .star');
+      stars.forEach(function(s) { s.className = 'star'; });
+      document.getElementById('productStarsLabel').textContent = 'Baha beriw';
+
+      document.getElementById('productCommentInput').value = '';
+      var commentsEl = document.getElementById('productComments');
+      commentsEl.innerHTML = '<p style="text-align:center;color:#999;font-size:13px;">Izohlar yuklanmoqda...</p>';
+
+      if (id) {
+        apiGet('/menu/products/' + id + '/comments').then(function(comments) {
+          var arr = Array.isArray(comments) ? comments : [];
+          if (!arr.length) {
+            commentsEl.innerHTML = '<p style="text-align:center;color:#999;font-size:13px;">Hali izohlar yo\'q.</p>';
+            return;
+          }
+          commentsEl.innerHTML = arr.map(function(c) {
+            return '<div class="product-comment-item">' +
+              '<p style="font-size:12px;color:#999;">' + formatDateTime(c.created_at) + '</p>' +
+              '<p>' + escapeHtml(c.text) + '</p>' +
+            '</div>';
+          }).join('');
+        }).catch(function() {
+          commentsEl.innerHTML = '<p style="text-align:center;color:#999;font-size:13px;">Izohlarni yuklashda xatolik.</p>';
+        });
+      }
+
+      modal.classList.add('open');
+    }
+
     (function() {
       var modal = document.getElementById('productModal');
       var closeBtn = document.getElementById('productModalClose');
@@ -711,14 +773,6 @@
   </div>
 
   <script>
-    (function () {
-      var loginLink = document.getElementById('headerLogin');
-      if (loginLink && getUser() && getToken()) {
-        loginLink.textContent = 'Profilim';
-        loginLink.href = '/profile/';
-      }
-    })();
-
     var loginBtn = document.querySelector('.header__login');
     var modalOverlay = document.getElementById('loginModal');
     var modalClose = document.getElementById('modalClose');
@@ -738,4 +792,3 @@
 
 </body>
 </html>
-

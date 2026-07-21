@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <base href="/">
-  <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mahsulot — Restaran</title>
   <link rel="stylesheet" href="/static/frontend/globals.css" />
@@ -90,7 +89,7 @@
     }
 
     function renderProduct(p) {
-      var img = p.image_big || p.image || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80';
+      var img = p.image || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80';
       var html =
         '<div class="pd-card">' +
           '<img class="pd-img" src="' + img + '" alt="' + (p.name || '') + '" />' +
@@ -99,9 +98,12 @@
             '<div class="pd-name">' + (p.name || '') + '</div>' +
             '<div class="pd-price">' + (p.price || 0) + ' so\'m</div>' +
             '<div class="pd-desc">' + (p.description || 'Ta\'rif mavjud emas.') + '</div>' +
+            '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
             '<a class="pd-order" href="https://wa.me/998912555309?text=' +
               encodeURIComponent('Salem! Men buyurtpa berejaqpan:\n\n' + (p.name || '') + ' - ' + (p.price || 0) + ' so\'m\n\nTelefon: +998912555309 yoki +998933350805') +
-              '" target="_blank">WhatsApp orqali buyurtma</a>' +
+              '" target="_blank">WhatsApp</a>' +
+            '<button class="pd-order" id="pdAddToCartBtn" style="background:var(--color-primary);border:none;cursor:pointer;">&#128722; Savatchaga</button>' +
+            '</div>' +
           '</div>' +
         '</div>' +
 
@@ -135,6 +137,19 @@
     }
 
     function initProductInteractions() {
+      var addBtn = document.getElementById('pdAddToCartBtn');
+      if (addBtn) {
+        addBtn.addEventListener('click', function() {
+          if (!productId) return;
+          if (!getToken()) { alert('Iltimos, avval tizimga kiring.'); window.location.href = '/login/'; return; }
+          apiPost('/orders/cart/add', { product_id: parseInt(productId), quantity: 1 }).then(function() {
+            alert('Mahsulot savatchaga qo\'shildi!');
+          }).catch(function() {
+            alert('Xatolik yuz berdi.');
+          });
+        });
+      }
+
       var stars = document.querySelectorAll('#pdStars .star');
       stars.forEach(function(star) {
         star.addEventListener('click', function() {
@@ -209,11 +224,6 @@
         stars.forEach(function(s) {
           s.className = 'star' + (parseInt(s.getAttribute('data-value')) <= Math.round(avg) ? ' active' : '');
         });
-      }).catch(function() {});
-    }
-
-    function loadLikes() {
-      apiGet('/menu/products/' + productId + '/rating').then(function(data) {
         var like = document.getElementById('pdLikeCount');
         var dislike = document.getElementById('pdDislikeCount');
         if (like) like.textContent = data.likes_count || 0;
@@ -221,13 +231,22 @@
       }).catch(function() {});
     }
 
+    function loadLikes() {
+      loadRating();
+    }
+
     function toggleLike(isLike) {
       if (!productId) return;
       apiPost('/menu/products/' + productId + '/like', { is_like: isLike }).then(function(res) {
         var likeBtn = document.getElementById('pdLikeBtn');
         var dislikeBtn = document.getElementById('pdDislikeBtn');
-        if (likeBtn) likeBtn.className = 'pd-like' + (isLike ? ' active' : '');
-        if (dislikeBtn) dislikeBtn.className = 'pd-dislike' + (!isLike ? ' active' : '');
+        if (isLike) {
+          if (likeBtn) likeBtn.classList.add('active');
+          if (dislikeBtn) dislikeBtn.classList.remove('active');
+        } else {
+          if (dislikeBtn) dislikeBtn.classList.add('active');
+          if (likeBtn) likeBtn.classList.remove('active');
+        }
         if (res.likes_count != null && document.getElementById('pdLikeCount'))
           document.getElementById('pdLikeCount').textContent = res.likes_count;
         if (res.dislikes_count != null && document.getElementById('pdDislikeCount'))

@@ -149,12 +149,20 @@ class ProductLikeToggleView(APIView):
         if not created:
             if like.is_like == serializer.validated_data["is_like"]:
                 like.delete()
-                return Response({"message": "Removed"})
+                return Response({
+                    "message": "Removed",
+                    "likes_count": product.likes.filter(is_like=True).count(),
+                    "dislikes_count": product.likes.filter(is_like=False).count(),
+                })
             else:
                 like.is_like = serializer.validated_data["is_like"]
                 like.save()
 
-        return Response({"message": "Success"})
+        return Response({
+            "message": "Success",
+            "likes_count": product.likes.filter(is_like=True).count(),
+            "dislikes_count": product.likes.filter(is_like=False).count(),
+        })
 
 
 # ==== Menu Comment Views ====
@@ -195,16 +203,21 @@ class ProductRatingCreateView(generics.CreateAPIView):
 
 
 class ProductRatingDetailView(APIView):
-    serializer_class = ProductRatingSerializer
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
         user = request.user if request.user.is_authenticated else None
+        user_rating = None
         if user:
-            rating = ProductRating.objects.filter(product=product, user=user).first()
-        else:
-            rating = None
-        if not rating:
-            return Response({'score': None, 'product': product.id}, status=status.HTTP_200_OK)
-        return Response({'score': rating.score, 'product': product.id, 'user': user.id if user else None})
+            r = ProductRating.objects.filter(product=product, user=user).first()
+            user_rating = r.score if r else None
+        all_ratings = product.ratings.all()
+        avg = round(sum(r.score for r in all_ratings) / all_ratings.count(), 1) if all_ratings else None
+        return Response({
+            'score': user_rating,
+            'average_score': avg,
+            'ratings_count': all_ratings.count(),
+            'likes_count': product.likes.filter(is_like=True).count(),
+            'dislikes_count': product.likes.filter(is_like=False).count(),
+        })
